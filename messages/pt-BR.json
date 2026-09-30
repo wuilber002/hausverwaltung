@@ -52,7 +52,7 @@
     "properties": "Imóveis",
     "units": "Unidades",
     "persons": "Pessoas",
-    "leases": "Contratos",
+    "leases": "Contratos de locação",
     "leasing": "Locações",
     "finances": "Financeiro",
     "dunning": "Cobrança",
@@ -204,8 +204,8 @@
   "setup": {
     "title": "Configuração inicial",
     "subtitle": "Crie a organização e o administrador para começar.",
-    "tenantName": "Nome da administradora",
-    "tenantNamePlaceholder": "ex.: Administradora Exemplo Ltda.",
+    "tenantName": "Nome da organização",
+    "tenantNamePlaceholder": "ex.: Organização Exemplo Ltda.",
     "adminName": "Seu nome",
     "passwordHint": "Pelo menos 6 caracteres.",
     "brandColor": "Cor do tema",
@@ -324,7 +324,7 @@
     "property": "Imóvel",
     "status": "Status",
     "occupied": "Ocupada",
-    "vacant": "Vaga",
+    "vacant": "Desocupada",
     "tenant": "Inquilino",
     "assignTenant": "Atribuir inquilino"
   },
@@ -560,10 +560,10 @@
   },
   "leasing": {
     "title": "Locação",
-    "subtitle": "Relacione unidades vagas ou com contrato próximo do fim a possíveis inquilinos",
-    "vacancy": "Vagas e contratos próximos do fim",
-    "noVacancy": "Nenhuma vaga ou contrato próximo do fim.",
-    "vacantNow": "Vaga agora",
+    "subtitle": "Relacione unidades desocupadas ou com contrato próximo do fim a possíveis inquilinos",
+    "vacancy": "Vacância e contratos em término",
+    "noVacancy": "Nenhuma unidade desocupada ou contrato próximo do fim.",
+    "vacantNow": "Desocupada agora",
     "vacantArea": "Área livre (modelo de área)",
     "endingSoon": "Termina em até 90 dias",
     "interested": "Possíveis inquilinos",
@@ -624,7 +624,7 @@
     "label": "Rótulo",
     "lease": "Contrato",
     "person": "Inquilino (pessoa)",
-    "vacancy": "Vaga",
+    "vacancy": "Desocupada",
     "area": "Área (m²)",
     "pricePerSqm": "Aluguel €/m²",
     "from": "De",
@@ -679,7 +679,7 @@
   "zensus": {
     "title": "Censo",
     "subtitle": "Dados de edifícios e moradias para declaração censitária",
-    "rent": "Aluguel líquido base"
+    "rent": "Aluguel líquido (sem encargos)"
   },
   "dunning": {
     "title": "Cobrança do portfólio",
@@ -697,7 +697,7 @@
   },
   "finances": {
     "title": "Finanças",
-    "subtitle": "Cobranças, pagamentos, itens em aberto e cobrança",
+    "subtitle": "Cobranças, pagamentos e itens em aberto",
     "generate": "Gerar cobranças",
     "month": "Mês",
     "totalOpen": "Total de itens em aberto",
