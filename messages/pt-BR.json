@@ -117,7 +117,7 @@
     "subtitle": "Organização e usuários",
     "tenant": "Organização",
     "users": "Usuários",
-    "role": "Perfil",
+    "role": "Função",
     "newUser": "Adicionar usuário",
     "editUser": "Editar usuário",
     "dateFormat": "Formato de data",
@@ -131,7 +131,7 @@
       "iso": "2026-12-31 (ISO)"
     },
     "linkedPerson": "Pessoa vinculada (para o portal)",
-    "usersHint": "Crie acessos para a equipe e para os portais de inquilinos e proprietários.",
+    "usersHint": "Crie acessos para a equipe, bem como para os portais de inquilinos e proprietários.",
     "you": "você",
     "resetPassword": "Redefinir senha",
     "tabGeneral": "Geral",
@@ -144,9 +144,9 @@
     "tenantName": "Nome da organização",
     "save": "Salvar",
     "saved": "Salvo",
-    "tenantAddress": "Endereço da administradora",
-    "tenantAddressPlaceholder": "ex.: Rua Exemplo, 1, 01000-000 São Paulo",
-    "tenantAddressHint": "Usado, por exemplo, como endereço do locador na declaração de residência (Wohnungsgeberbestätigung)."
+    "tenantAddress": "Endereço da administração",
+    "tenantAddressPlaceholder": "ex.: Rua Exemplo, 1, 12345 Cidade Exemplo",
+    "tenantAddressHint": "Usado, por exemplo, como endereço do locador na declaração do locador (Wohnungsgeberbestätigung)."
   },
   "account": {
     "changePassword": "Alterar senha",
@@ -229,13 +229,13 @@
     "removeLogo": "Remover"
   },
   "apiInfo": {
-    "title": "API & MCP endpoints",
-    "rest": "REST API",
-    "mcp": "MCP server",
-    "reference": "API reference",
-    "howto": "Create a token above and add it to your AI client as an MCP server with this bearer token — the AI can then read and manage your portfolio.",
-    "mcpConfigTitle": "MCP configuration (Claude Desktop etc.)",
-    "mcpConfigHint": "Paste into your AI client's config file and replace DEIN_TOKEN with a token created above."
+    "title": "Endpoints de API e MCP",
+    "rest": "API REST",
+    "mcp": "Servidor MCP",
+    "reference": "Referência da API",
+    "howto": "Crie um token acima e adicione-o ao seu cliente de IA como um servidor MCP usando este token Bearer — assim, a IA poderá ler e administrar seu portfólio.",
+    "mcpConfigTitle": "Configuração do MCP (Claude Desktop etc.)",
+    "mcpConfigHint": "Cole no arquivo de configuração do seu cliente de IA e substitua DEIN_TOKEN por um token criado acima."
   },
   "tokens": {
     "title": "Acesso à API e MCP",
@@ -460,9 +460,9 @@
     "returnedDate": "Devolvida em"
   },
   "renter": {
-    "title": "Tenants",
-    "add": "Add tenant",
-    "empty": "No tenants assigned."
+    "title": "Inquilinos",
+    "add": "Adicionar inquilino",
+    "empty": "Nenhum inquilino atribuído."
   },
   "rentComponentType": {
     "NEBENKOSTEN": "Adiantamento de encargos",
@@ -472,14 +472,14 @@
     "SONSTIGES": "Outros"
   },
   "adjustmentType": {
-    "STAFFEL": "Stepped rent",
-    "INDEX": "Index rent"
+    "STAFFEL": "Aluguel escalonado",
+    "INDEX": "Aluguel indexado"
   },
   "depositType": {
-    "BAR": "Cash deposit",
-    "BUERGSCHAFT": "Guarantee",
-    "VERPFAENDET": "Pledged account",
-    "KAUTIONSKONTO": "Deposit account"
+    "BAR": "Caução em dinheiro",
+    "BUERGSCHAFT": "Fiança",
+    "VERPFAENDET": "Conta vinculada",
+    "KAUTIONSKONTO": "Conta de caução"
   },
   "reports": {
     "title": "Relatórios",
@@ -501,10 +501,10 @@
     "label": "Rótulo"
   },
   "customFieldEntity": {
-    "PROPERTY": "Property",
-    "UNIT": "Unit",
-    "PERSON": "Person",
-    "LEASE": "Lease"
+    "PROPERTY": "Imóvel",
+    "UNIT": "Unidade",
+    "PERSON": "Pessoa",
+    "LEASE": "Contrato de locação"
   },
   "templates": {
     "title": "Modelos e mala direta",
@@ -555,8 +555,8 @@
     "yearly": "Imposto predial anual"
   },
   "niche": {
-    "bookAsCost": "Book as cost",
-    "bookAsCostHint": "Add as a cost item to the current statement year (booking again updates the amount)."
+    "bookAsCost": "Lançar como custo",
+    "bookAsCostHint": "Adiciona como item de custo ao ano atual do demonstrativo (um novo lançamento atualiza o valor)."
   },
   "leasing": {
     "title": "Locação",
@@ -677,9 +677,9 @@
     }
   },
   "zensus": {
-    "title": "Census",
-    "subtitle": "Building and dwelling data for census reporting",
-    "rent": "Net cold rent"
+    "title": "Censo",
+    "subtitle": "Dados de edifícios e moradias para declaração censitária",
+    "rent": "Aluguel líquido base"
   },
   "dunning": {
     "title": "Cobrança do portfólio",
@@ -953,13 +953,13 @@
     "resolutionText": "Texto da deliberação"
   },
   "meetingStatus": {
-    "GEPLANT": "Planned",
-    "DURCHGEFUEHRT": "Held"
+    "GEPLANT": "Planejada",
+    "DURCHGEFUEHRT": "Realizada"
   },
   "resolutionResult": {
-    "ANGENOMMEN": "Adopted",
-    "ABGELEHNT": "Rejected",
-    "VERTAGT": "Postponed"
+    "ANGENOMMEN": "Aprovada",
+    "ABGELEHNT": "Rejeitada",
+    "VERTAGT": "Adiada"
   },
   "weg": {
     "title": "Gestão de condomínio",
@@ -1019,20 +1019,20 @@
     "SONSTIGES": "Outros"
   },
   "audit": {
-    "title": "Audit log",
-    "subtitle": "Traceability of all changes (GoBD)",
-    "empty": "No entries yet.",
-    "time": "Time",
-    "user": "User",
-    "action": "Action",
-    "entity": "Entity",
-    "summary": "Description",
-    "pageOf": "Page {page} of {pages}"
+    "title": "Registro de auditoria",
+    "subtitle": "Rastreabilidade de todas as alterações (GoBD)",
+    "empty": "Nenhum registro ainda.",
+    "time": "Data e hora",
+    "user": "Usuário",
+    "action": "Ação",
+    "entity": "Entidade",
+    "summary": "Descrição",
+    "pageOf": "Página {page} de {pages}"
   },
   "auditAction": {
-    "CREATE": "Created",
-    "UPDATE": "Updated",
-    "DELETE": "Deleted"
+    "CREATE": "Criado",
+    "UPDATE": "Atualizado",
+    "DELETE": "Excluído"
   },
   "email": {
     "title": "Caixa de saída",
@@ -1075,9 +1075,9 @@
     "from": "De"
   },
   "emailStatus": {
-    "ENTWURF": "Draft",
-    "GESENDET": "Sent",
-    "FEHLER": "Error"
+    "ENTWURF": "Rascunho",
+    "GESENDET": "Enviado",
+    "FEHLER": "Erro"
   },
   "print": {
     "printPdf": "Imprimir / PDF",
