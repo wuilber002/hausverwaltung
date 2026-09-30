@@ -11,14 +11,14 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 const PRESETS = [
-  { name: "Indigo", color: "#4f46e5" },
-  { name: "Blau", color: "#2563eb" },
-  { name: "Smaragd", color: "#059669" },
-  { name: "Violett", color: "#7c3aed" },
-  { name: "Bernstein", color: "#d97706" },
-  { name: "Rosé", color: "#e11d48" },
-  { name: "Schiefer", color: "#334155" },
-  { name: "Türkis", color: "#0d9488" },
+  { name: "indigo", color: "#4f46e5" },
+  { name: "blue", color: "#2563eb" },
+  { name: "emerald", color: "#059669" },
+  { name: "violet", color: "#7c3aed" },
+  { name: "amber", color: "#d97706" },
+  { name: "rose", color: "#e11d48" },
+  { name: "slate", color: "#334155" },
+  { name: "teal", color: "#0d9488" },
 ];
 
 const selectCls = cn(
@@ -134,7 +134,7 @@ export function SetupWizard() {
                 )}
               >
                 <span className="size-8 rounded-full" style={{ backgroundColor: p.color }} />
-                {p.name}
+                {t(`setup.colors.${p.name}`)}
               </button>
             ))}
           </div>

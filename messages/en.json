@@ -209,6 +209,16 @@
     "adminName": "Your name",
     "passwordHint": "At least 6 characters.",
     "brandColor": "Theme colour",
+    "colors": {
+      "indigo": "Indigo",
+      "blue": "Blue",
+      "emerald": "Emerald",
+      "violet": "Violet",
+      "amber": "Amber",
+      "rose": "Rose",
+      "slate": "Slate",
+      "teal": "Teal"
+    },
     "preview": "Preview",
     "submit": "Complete setup",
     "welcomeTitle": "Welcome to HaVeWa",
