@@ -11,7 +11,7 @@ import type { ActionState } from "@/lib/schemas";
 
 // Neuen Mandanten + ersten Admin anlegen (nur Instanz-Admin).
 export async function createTenant(_p: ActionState, fd: FormData): Promise<ActionState> {
-  await requireSuperAdmin();
+  const user = await requireSuperAdmin();
   const name = String(fd.get("name") ?? "").trim();
   const adminName = String(fd.get("adminName") ?? "").trim() || "Admin";
   const email = String(fd.get("adminEmail") ?? "").trim().toLowerCase();
@@ -25,10 +25,10 @@ export async function createTenant(_p: ActionState, fd: FormData): Promise<Actio
   const tenant = await prisma.tenant.create({
     data: {
       name,
-      users: { create: { name: adminName, email, passwordHash: await bcrypt.hash(password, 10), role: "ADMIN" } },
+      users: { create: { name: adminName, email, passwordHash: await bcrypt.hash(password, 10), role: "ADMIN", locale: user.locale } },
     },
   });
-  await ensureDefaultAccounts(prisma, tenant.id);
+  await ensureDefaultAccounts(prisma, tenant.id, user.locale);
   revalidatePath("/", "layout");
   return { ok: true };
 }

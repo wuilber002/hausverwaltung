@@ -16,6 +16,7 @@ export type SessionUser = {
   role: UserRole;
   name?: string | null;
   email?: string | null;
+  locale: string;
 };
 
 /** Server-Guard: liefert den User oder leitet zum Login. */
@@ -32,6 +33,7 @@ export async function requireUser(): Promise<SessionUser> {
     role: u.role,
     name: u.name,
     email: u.email,
+    locale: u.locale ?? "de",
   };
 }
 

@@ -36,7 +36,7 @@ export async function setupSystem(_p: ActionState, fd: FormData): Promise<Action
   });
 
   // Standard-Kontenrahmen anlegen
-  await ensureDefaultAccounts(prisma, tenant.id);
+  await ensureDefaultAccounts(prisma, tenant.id, locale);
 
   // Optionales erstes Objekt
   if (propertyName) {

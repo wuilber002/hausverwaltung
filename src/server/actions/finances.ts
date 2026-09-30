@@ -23,7 +23,7 @@ import { dunningDocument } from "@/lib/dunning";
 // Standard-Kontenrahmen für den Mandanten anlegen (idempotent).
 export async function seedDefaultAccounts(): Promise<void> {
   const user = await requireWriter();
-  await ensureDefaultAccounts(prisma, user.tenantId);
+  await ensureDefaultAccounts(prisma, user.tenantId, user.locale);
   revalidatePath("/", "layout");
 }
 
