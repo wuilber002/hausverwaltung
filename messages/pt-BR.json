@@ -222,11 +222,11 @@
     "skip": "Pular"
   },
   "branding": {
-    "title": "Appearance",
-    "color": "Theme colour",
-    "logo": "Logo",
-    "uploadLogo": "Upload logo",
-    "removeLogo": "Remove"
+    "title": "Aparência",
+    "color": "Cor do tema",
+    "logo": "Logotipo",
+    "uploadLogo": "Enviar logotipo",
+    "removeLogo": "Remover"
   },
   "apiInfo": {
     "title": "API & MCP endpoints",
@@ -238,39 +238,39 @@
     "mcpConfigHint": "Paste into your AI client's config file and replace DEIN_TOKEN with a token created above."
   },
   "tokens": {
-    "title": "API & MCP access",
-    "subtitle": "Personal access tokens for the REST API and AI/MCP access.",
-    "name": "Label",
-    "namePlaceholder": "e.g. My AI agent",
-    "forUser": "For user",
-    "create": "Create token",
-    "created": "Token created — copy it now:",
-    "onceHint": "Shown only once for security reasons.",
-    "revoke": "Revoke",
-    "revoked": "revoked",
-    "delete": "Delete",
-    "lastUsed": "last used"
+    "title": "Acesso à API e MCP",
+    "subtitle": "Tokens pessoais de acesso para a API REST e IA/MCP.",
+    "name": "Rótulo",
+    "namePlaceholder": "ex.: Meu agente de IA",
+    "forUser": "Para o usuário",
+    "create": "Criar token",
+    "created": "Token criado — copie-o agora:",
+    "onceHint": "Exibido apenas uma vez por segurança.",
+    "revoke": "Revogar",
+    "revoked": "revogado",
+    "delete": "Excluir",
+    "lastUsed": "último uso"
   },
   "login": {
-    "title": "Sign in",
-    "subtitle": "Please sign in to continue.",
-    "welcomeTo": "Welcome to",
-    "welcome": "Welcome back",
-    "loadingApp": "Loading the app…",
-    "email": "Email",
-    "password": "Password",
-    "showPassword": "Show password",
-    "hidePassword": "Hide password",
-    "submit": "Sign in",
-    "or": "or",
-    "ssoSubmit": "Sign in with {provider}",
-    "error": "Invalid email or password",
-    "demoHint": "Demo: admin@havewa.app / admin",
-    "tagline": "Rental and condominium management in one system.",
-    "point1": "Service-charge statements per BetrKV & HeizkostenV",
-    "point2": "HOA annual statements, meetings & reserves",
-    "point3": "Tenant/owner portals and AI assistant",
-    "demoTitle": "Demo logins"
+    "title": "Entrar",
+    "subtitle": "Entre para continuar.",
+    "welcomeTo": "Boas-vindas a",
+    "welcome": "Que bom ver você novamente",
+    "loadingApp": "Carregando o aplicativo…",
+    "email": "E-mail",
+    "password": "Senha",
+    "showPassword": "Mostrar senha",
+    "hidePassword": "Ocultar senha",
+    "submit": "Entrar",
+    "or": "ou",
+    "ssoSubmit": "Entrar com {provider}",
+    "error": "E-mail ou senha inválidos",
+    "demoHint": "Demonstração: admin@havewa.app / admin",
+    "tagline": "Gestão de locações e condomínios em um único sistema.",
+    "point1": "Demonstrativos de encargos por BetrKV e HeizkostenV",
+    "point2": "Demonstrativos anuais de condomínio, reuniões e reservas",
+    "point3": "Portais de inquilinos/proprietários e assistente de IA",
+    "demoTitle": "Acessos de demonstração"
   },
   "fields": {
     "name": "Name",
@@ -482,14 +482,14 @@
     "KAUTIONSKONTO": "Deposit account"
   },
   "reports": {
-    "title": "Reports",
-    "subtitle": "KPIs, vacancy, portfolio and CSV exports",
-    "exportProperties": "Properties (CSV)",
-    "exportOpenItems": "Open items (CSV)",
-    "exportTenants": "Tenants (CSV)",
-    "vacancy": "Vacancy",
-    "noVacancy": "No vacancy.",
-    "portfolio": "Portfolio"
+    "title": "Relatórios",
+    "subtitle": "Indicadores, vacância, portfólio e exportações CSV",
+    "exportProperties": "Imóveis (CSV)",
+    "exportOpenItems": "Itens em aberto (CSV)",
+    "exportTenants": "Inquilinos (CSV)",
+    "vacancy": "Vacância",
+    "noVacancy": "Sem vacância.",
+    "portfolio": "Portfólio"
   },
   "customFields": {
     "title": "Campos personalizados",
@@ -929,28 +929,28 @@
     "SONSTIGES": "Other"
   },
   "meetings": {
-    "title": "Owners' meetings",
-    "subtitle": "Invitation, agenda, voting, minutes and resolution collection",
-    "property": "HOA property",
-    "new": "New meeting",
-    "edit": "Edit meeting",
-    "empty": "No meetings.",
-    "location": "Location",
-    "agenda": "Agenda",
-    "addAgendaItem": "Add item",
-    "noAgenda": "No agenda items.",
-    "protocol": "Minutes",
-    "resolutions": "Resolutions",
-    "addResolution": "Pass resolution",
-    "noResolutions": "No resolutions.",
-    "collection": "Resolution collection",
-    "number": "No.",
-    "result": "Result",
-    "votes": "Vote",
-    "yes": "Yes",
-    "no": "No",
-    "abstain": "Abstain",
-    "resolutionText": "Resolution text"
+    "title": "Assembleias de proprietários",
+    "subtitle": "Convite, pauta, votação, ata e registro de deliberações",
+    "property": "Imóvel do condomínio",
+    "new": "Nova assembleia",
+    "edit": "Editar assembleia",
+    "empty": "Nenhuma assembleia.",
+    "location": "Local",
+    "agenda": "Pauta",
+    "addAgendaItem": "Adicionar item",
+    "noAgenda": "Nenhum item na pauta.",
+    "protocol": "Ata",
+    "resolutions": "Deliberações",
+    "addResolution": "Registrar deliberação",
+    "noResolutions": "Nenhuma deliberação.",
+    "collection": "Registro de deliberações",
+    "number": "Nº",
+    "result": "Resultado",
+    "votes": "Voto",
+    "yes": "Sim",
+    "no": "Não",
+    "abstain": "Abstenção",
+    "resolutionText": "Texto da deliberação"
   },
   "meetingStatus": {
     "GEPLANT": "Planned",
@@ -992,24 +992,24 @@
     "noActual": "No actual costs (cost items) for this year."
   },
   "assistant": {
-    "title": "AI assistant",
-    "placeholder": "Ask about your portfolio…",
-    "ask": "Ask",
-    "thinking": "Thinking…",
-    "notConfigured": "Without ANTHROPIC_API_KEY the assistant only shows a metrics summary. Set the key for real AI answers."
+    "title": "Assistente de IA",
+    "placeholder": "Pergunte sobre seu portfólio…",
+    "ask": "Perguntar",
+    "thinking": "Pensando…",
+    "notConfigured": "Sem ANTHROPIC_API_KEY, o assistente exibe apenas um resumo de métricas. Configure a chave para obter respostas de IA."
   },
   "calendar": {
-    "title": "Calendar",
-    "subtitle": "Appointments, deadlines, maintenance and meetings at a glance",
-    "add": "Appointment",
-    "start": "Start",
-    "end": "End",
-    "today": "Today",
-    "upcoming": "This month's appointments",
-    "empty": "No appointments this month.",
-    "legendAppointment": "Appointment",
-    "legendMaintenance": "Maintenance",
-    "legendMeeting": "Meeting"
+    "title": "Calendário",
+    "subtitle": "Compromissos, prazos, manutenção e reuniões em um só lugar",
+    "add": "Compromisso",
+    "start": "Início",
+    "end": "Fim",
+    "today": "Hoje",
+    "upcoming": "Compromissos deste mês",
+    "empty": "Nenhum compromisso neste mês.",
+    "legendAppointment": "Compromisso",
+    "legendMaintenance": "Manutenção",
+    "legendMeeting": "Reunião"
   },
   "appointmentType": {
     "BESICHTIGUNG": "Viewing",
@@ -1035,44 +1035,44 @@
     "DELETE": "Deleted"
   },
   "email": {
-    "title": "Outbox",
-    "subtitle": "Compose and send emails to tenants and owners",
-    "compose": "New email",
-    "to": "To",
-    "toPlaceholder": "address@example.com, separate multiple with commas",
-    "addPerson": "Add person",
-    "attachments": "Attachments (documents)",
-    "saveToOutbox": "Save to outbox",
-    "subject": "Subject",
-    "body": "Message",
+    "title": "Caixa de saída",
+    "subtitle": "Redija e envie e-mails para inquilinos e proprietários",
+    "compose": "Novo e-mail",
+    "to": "Para",
+    "toPlaceholder": "endereco@exemplo.com; separe vários por vírgula",
+    "addPerson": "Adicionar pessoa",
+    "attachments": "Anexos (documentos)",
+    "saveToOutbox": "Salvar na caixa de saída",
+    "subject": "Assunto",
+    "body": "Mensagem",
     "status": "Status",
-    "send": "Send",
-    "view": "View",
-    "empty": "No emails in the outbox.",
-    "noSmtp": "No SMTP configured — emails are recorded and marked as sent, but not actually delivered. Enter credentials under Settings.",
-    "template": "Template",
-    "templateChoose": "Choose template",
-    "placeholderHint": "Placeholders like mieter.name, objekt.name, datum (in double curly braces) are filled per recipient.",
-    "bulk": "Bulk email",
-    "audience": "Recipients",
+    "send": "Enviar",
+    "view": "Visualizar",
+    "empty": "Nenhum e-mail na caixa de saída.",
+    "noSmtp": "Nenhum SMTP configurado — os e-mails são registrados como enviados, mas não são entregues. Informe as credenciais em Configurações.",
+    "template": "Modelo",
+    "templateChoose": "Escolher modelo",
+    "placeholderHint": "Marcadores como mieter.name, objekt.name e datum (entre chaves duplas) são preenchidos para cada destinatário.",
+    "bulk": "E-mail em massa",
+    "audience": "Destinatários",
     "tpl": {
       "reminder": {
-        "name": "Payment reminder",
-        "subject": "Payment reminder",
-        "body": "Dear Sir or Madam,\n\nan amount is still outstanding on your rent account. Please settle it within 14 days.\n\nKind regards\nYour property management"
+        "name": "Lembrete de pagamento",
+        "subject": "Lembrete de pagamento",
+        "body": "Prezado(a),\n\nhá um valor pendente em sua conta de aluguel. Pedimos que o regularize em até 14 dias.\n\nAtenciosamente\nSua administradora"
       },
       "info": {
-        "name": "Info to tenants",
-        "subject": "Information from your property management",
-        "body": "Dear tenants,\n\nwe would like to inform you of the following:\n\n...\n\nKind regards\nYour property management"
+        "name": "Informação aos inquilinos",
+        "subject": "Informação da sua administradora",
+        "body": "Prezados(as) inquilinos(as),\n\ngostaríamos de informar o seguinte:\n\n...\n\nAtenciosamente\nSua administradora"
       },
       "statement": {
-        "name": "Statement announced",
-        "subject": "Your service-charge statement",
-        "body": "Dear Sir or Madam,\n\nplease find attached your service-charge statement. We are happy to answer any questions.\n\nKind regards\nYour property management"
+        "name": "Demonstrativo disponível",
+        "subject": "Seu demonstrativo de encargos",
+        "body": "Prezado(a),\n\nsegue anexo seu demonstrativo de encargos. Estamos à disposição para dúvidas.\n\nAtenciosamente\nSua administradora"
       }
     },
-    "from": "From"
+    "from": "De"
   },
   "emailStatus": {
     "ENTWURF": "Draft",
@@ -1080,21 +1080,21 @@
     "FEHLER": "Error"
   },
   "print": {
-    "printPdf": "Print / PDF",
-    "heatingNote": "Heating and hot-water costs were split per the German HeizkostenV: 30% by living area and 70% by metered consumption.",
-    "reminderTitle": "Payment reminder",
-    "dunningTitle": "Dunning notice",
-    "dunningIntro": "the following amount is still outstanding for unit {unit}:",
-    "dunningFee": "Dunning fee",
-    "dunningTotal": "Total amount due",
-    "dunningRequest": "Please transfer the outstanding amount to our account within 14 days. If you have already made the payment, please disregard this letter.",
-    "regards": "Kind regards"
+    "printPdf": "Imprimir / PDF",
+    "heatingNote": "Os custos de aquecimento e água quente foram divididos conforme a HeizkostenV alemã: 30% pela área e 70% pelo consumo medido.",
+    "reminderTitle": "Lembrete de pagamento",
+    "dunningTitle": "Aviso de cobrança",
+    "dunningIntro": "o valor a seguir permanece pendente para a unidade {unit}:",
+    "dunningFee": "Taxa de cobrança",
+    "dunningTotal": "Total devido",
+    "dunningRequest": "Transfira o valor pendente para nossa conta em até 14 dias. Caso já tenha realizado o pagamento, desconsidere esta carta.",
+    "regards": "Atenciosamente"
   },
   "search": {
-    "title": "Search",
-    "placeholder": "Properties, units, people…",
-    "prompt": "Enter a search term to search properties, units, people and leases.",
-    "resultsFor": "{count, plural, one {# result} other {# results}} for “{q}”",
-    "noResults": "No results."
+    "title": "Pesquisar",
+    "placeholder": "Imóveis, unidades, pessoas…",
+    "prompt": "Informe um termo para pesquisar imóveis, unidades, pessoas e contratos.",
+    "resultsFor": "{count, plural, one {# resultado} other {# resultados}} para “{q}”",
+    "noResults": "Nenhum resultado."
   }
 }
