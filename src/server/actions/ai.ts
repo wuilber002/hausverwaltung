@@ -8,6 +8,95 @@ import { money } from "@/lib/format";
 
 export type AssistantState = { answer?: string; configured?: boolean; error?: string };
 
+type AssistantLocale = "de" | "en" | "pt-BR";
+
+function assistantLocale(locale: string): AssistantLocale {
+  return locale === "en" || locale === "pt-BR" ? locale : "de";
+}
+
+function assistantSummaryFallback(locale: AssistantLocale, ctx: {
+  objekte: number;
+  einheiten: number;
+  vermietet: number;
+  leerstand: number;
+  sollmieteMonatlich: number;
+  offenePostenSumme: number;
+  ueberfaelligeForderungen: number;
+  offeneTickets: number;
+  faelligeWartungen: number;
+}) {
+  if (locale === "pt-BR") {
+    return [
+      "Assistente de IA não configurado (ANTHROPIC_API_KEY ausente). Indicadores dos imóveis administrados:",
+      "• " + ctx.objekte + " imóveis, " + ctx.einheiten + " unidades (" + ctx.vermietet + " locadas, " + ctx.leerstand + " vagas)",
+      "• Aluguel mensal previsto: " + ctx.sollmieteMonatlich + " €",
+      "• Itens em aberto: " + ctx.offenePostenSumme + " € (" + ctx.ueberfaelligeForderungen + " vencidos)",
+      "• " + ctx.offeneTickets + " ocorrências abertas, " + ctx.faelligeWartungen + " manutenções vencidas",
+    ].join("\n");
+  }
+  if (locale === "en") {
+    return [
+      "AI assistant is not configured (ANTHROPIC_API_KEY is missing). Portfolio metrics:",
+      "• " + ctx.objekte + " properties, " + ctx.einheiten + " units (" + ctx.vermietet + " occupied, " + ctx.leerstand + " vacant)",
+      "• Expected monthly rent: " + ctx.sollmieteMonatlich + " €",
+      "• Open items: " + ctx.offenePostenSumme + " € (" + ctx.ueberfaelligeForderungen + " overdue)",
+      "• " + ctx.offeneTickets + " open tickets, " + ctx.faelligeWartungen + " overdue maintenance items",
+    ].join("\n");
+  }
+  return [
+    "KI-Assistent nicht konfiguriert (ANTHROPIC_API_KEY fehlt). Kennzahlen zum Bestand:",
+    "• " + ctx.objekte + " Objekte, " + ctx.einheiten + " Einheiten (" + ctx.vermietet + " vermietet, " + ctx.leerstand + " leer)",
+    "• Sollmiete/Monat: " + ctx.sollmieteMonatlich + " €",
+    "• Offene Posten: " + ctx.offenePostenSumme + " € (" + ctx.ueberfaelligeForderungen + " überfällig)",
+    "• " + ctx.offeneTickets + " offene Tickets, " + ctx.faelligeWartungen + " fällige Wartungen",
+  ].join("\n");
+}
+
+function statementFallback(
+  locale: AssistantLocale,
+  year: number,
+  property: string | undefined,
+  total: number,
+  units: Array<{ label: string; allocated: number; prepayment: number; balance: number }>,
+) {
+  const unitLines = units.map((unit) => {
+    const balanceStatus = unit.balance >= 0
+      ? locale === "pt-BR" ? "crédito" : locale === "en" ? "credit" : "Guthaben"
+      : locale === "pt-BR" ? "valor a pagar" : locale === "en" ? "additional payment" : "Nachzahlung";
+
+    if (locale === "pt-BR") {
+      return "• " + unit.label + ": rateado " + money(unit.allocated) + ", adiantamentos " + money(unit.prepayment) + ", saldo " + money(unit.balance) + " (" + balanceStatus + ")";
+    }
+    if (locale === "en") {
+      return "• " + unit.label + ": allocated " + money(unit.allocated) + ", prepayment " + money(unit.prepayment) + ", balance " + money(unit.balance) + " (" + balanceStatus + ")";
+    }
+    return "• " + unit.label + ": umgelegt " + money(unit.allocated) + ", VZ " + money(unit.prepayment) + ", Saldo " + money(unit.balance) + " (" + balanceStatus + ")";
+  });
+
+  if (locale === "pt-BR") {
+    return [
+      "Assistente de IA não configurado (ANTHROPIC_API_KEY ausente). Resumo do demonstrativo de " + year + ":",
+      "• Imóvel: " + property,
+      "• Total de custos rateáveis: " + money(total),
+      ...unitLines,
+    ].join("\n");
+  }
+  if (locale === "en") {
+    return [
+      "AI assistant is not configured (ANTHROPIC_API_KEY is missing). Summary of the " + year + " statement:",
+      "• Property: " + property,
+      "• Total allocable costs: " + money(total),
+      ...unitLines,
+    ].join("\n");
+  }
+  return [
+    "KI-Assistent nicht konfiguriert (ANTHROPIC_API_KEY fehlt). Kurzfassung der Abrechnung " + year + ":",
+    "• Objekt: " + property,
+    "• Umlagefähige Kosten gesamt: " + money(total),
+    ...unitLines,
+  ].join("\n");
+}
+
 /** Baut einen kompakten Bestands-Kontext (nur Kennzahlen, keine PII) für den Assistenten. */
 async function buildContext(tenantId: string) {
   const now = new Date();
@@ -50,7 +139,7 @@ async function buildContext(tenantId: string) {
     ueberfaelligeForderungen: overdue,
     offeneTickets: openTickets,
     faelligeWartungen: dueMaintenance,
-    objektliste: properties.map((p) => `${p.name} (${p.city}, ${p.management})`),
+    objektliste: properties.map((p) => p.name + " (" + p.city + ", " + p.management + ")"),
   };
 }
 
@@ -67,16 +156,7 @@ export async function askAssistantAction(_prev: AssistantState, fd: FormData): P
   const aiCfg = { provider: tenant?.aiProvider, baseUrl: tenant?.aiBaseUrl, apiKey: tenant?.aiApiKey, model: tenant?.aiModel };
   const configured = isAiConfigured(aiCfg);
 
-  if (!configured) {
-    // Regelbasierter Fallback ohne LLM: fasst die Kennzahlen zusammen.
-    const answer =
-      `KI-Assistent nicht konfiguriert (ANTHROPIC_API_KEY fehlt). Kennzahlen zum Bestand:\n` +
-      `• ${ctx.objekte} Objekte, ${ctx.einheiten} Einheiten (${ctx.vermietet} vermietet, ${ctx.leerstand} leer)\n` +
-      `• Sollmiete/Monat: ${ctx.sollmieteMonatlich} €\n` +
-      `• Offene Posten: ${ctx.offenePostenSumme} € (${ctx.ueberfaelligeForderungen} überfällig)\n` +
-      `• ${ctx.offeneTickets} offene Tickets, ${ctx.faelligeWartungen} fällige Wartungen`;
-    return { answer, configured: false };
-  }
+  if (!configured) return { answer: assistantSummaryFallback(assistantLocale(user.locale), ctx), configured: false };
 
   try {
     const answer = await askAssistant(JSON.stringify(ctx), question, aiCfg);
@@ -106,12 +186,10 @@ export async function explainStatement(_p: AssistantState, fd: FormData): Promis
   };
 
   if (!isAiConfigured(aiCfg)) {
-    const answer =
-      `KI-Assistent nicht konfiguriert (ANTHROPIC_API_KEY fehlt). Kurzfassung der Abrechnung ${year}:\n` +
-      `• Objekt: ${ctx.objekt}\n` +
-      `• Umlagefähige Kosten gesamt: ${money(st.totalUmlage)}\n` +
-      st.units.map((u) => `• ${u.label}: umgelegt ${money(u.allocated)}, VZ ${money(u.prepayment)}, Saldo ${money(u.balance)} ${u.balance >= 0 ? "(Guthaben)" : "(Nachzahlung)"}`).join("\n");
-    return { answer, configured: false };
+    return {
+      answer: statementFallback(assistantLocale(user.locale), year, st.property?.name, st.totalUmlage, st.units),
+      configured: false,
+    };
   }
   try {
     const answer = await askAssistant(
