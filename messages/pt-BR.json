@@ -309,10 +309,10 @@
     "detailTitle": "Detalhes do imóvel"
   },
   "buildings": {
-    "new": "New building",
-    "edit": "Edit building",
-    "empty": "No buildings in this property yet.",
-    "units": "Units"
+    "new": "Novo edifício",
+    "edit": "Editar edifício",
+    "empty": "Nenhum edifício neste imóvel ainda.",
+    "units": "Unidades"
   },
   "units": {
     "title": "Unidades",
@@ -329,12 +329,12 @@
     "assignTenant": "Atribuir inquilino"
   },
   "unitDetail": {
-    "meters": "Meters",
-    "newMeter": "New meter",
-    "noMeters": "No meters recorded.",
-    "readings": "Readings",
-    "newReading": "New reading",
-    "noReadings": "No readings recorded."
+    "meters": "Medidores",
+    "newMeter": "Novo medidor",
+    "noMeters": "Nenhum medidor registrado.",
+    "readings": "Leituras",
+    "newReading": "Nova leitura",
+    "noReadings": "Nenhuma leitura registrada."
   },
   "persons": {
     "title": "Pessoas",
@@ -357,22 +357,22 @@
     "received": "Recebido"
   },
   "personType": {
-    "MIETER": "Tenant",
-    "EIGENTUEMER": "Owner",
-    "INTERESSENT": "Prospect",
-    "HANDWERKER": "Contractor",
-    "MAKLER": "Broker",
-    "BANK": "Bank",
-    "SONSTIGE": "Other"
+    "MIETER": "Inquilino",
+    "EIGENTUEMER": "Proprietário",
+    "INTERESSENT": "Interessado",
+    "HANDWERKER": "Prestador de serviço",
+    "MAKLER": "Corretor",
+    "BANK": "Banco",
+    "SONSTIGE": "Outros"
   },
   "managementType": {
-    "MIET": "Rental management",
-    "WEG": "HOA management"
+    "MIET": "Administração de locação",
+    "WEG": "Administração de condomínio"
   },
   "propertyType": {
-    "WOHNEN": "Residential",
-    "GEWERBE": "Commercial",
-    "GEMISCHT": "Mixed"
+    "WOHNEN": "Residencial",
+    "GEWERBE": "Comercial",
+    "GEMISCHT": "Misto"
   },
   "fee": {
     "title": "Taxa de administração",
@@ -386,18 +386,18 @@
     "PROZENT": "Percentual do aluguel"
   },
   "unitType": {
-    "WOHNUNG": "Apartment",
-    "GEWERBE": "Commercial",
-    "STELLPLATZ": "Parking space",
-    "KELLER": "Basement",
-    "SONSTIGES": "Other"
+    "WOHNUNG": "Apartamento",
+    "GEWERBE": "Comercial",
+    "STELLPLATZ": "Vaga de estacionamento",
+    "KELLER": "Porão",
+    "SONSTIGES": "Outros"
   },
   "meterType": {
-    "STROM": "Electricity",
-    "GAS": "Gas",
-    "WASSER_KALT": "Water (cold)",
-    "WASSER_WARM": "Water (hot)",
-    "WAERME": "Heat"
+    "STROM": "Eletricidade",
+    "GAS": "Gás",
+    "WASSER_KALT": "Água (fria)",
+    "WASSER_WARM": "Água (quente)",
+    "WAERME": "Aquecimento"
   },
   "leases": {
     "title": "Contratos de locação",
@@ -518,41 +518,41 @@
     "placeholders": "Marcadores disponíveis"
   },
   "templateCategory": {
-    "ANSCHREIBEN": "Letter",
-    "ABRECHNUNG": "Statement",
-    "MAHNUNG": "Dunning",
-    "VERTRAG": "Contract",
-    "PROTOKOLL": "Minutes",
-    "SONSTIGES": "Other"
+    "ANSCHREIBEN": "Carta",
+    "ABRECHNUNG": "Demonstrativo",
+    "MAHNUNG": "Cobrança",
+    "VERTRAG": "Contrato",
+    "PROTOKOLL": "Ata",
+    "SONSTIGES": "Outros"
   },
   "insurance": {
-    "title": "Insurance",
-    "subtitle": "Insurance policies per property",
-    "new": "New policy",
-    "empty": "No insurance recorded.",
-    "insurer": "Insurer",
-    "policyNo": "Policy no.",
-    "premium": "Annual premium",
-    "start": "Start",
-    "end": "Expiry"
+    "title": "Seguros",
+    "subtitle": "Apólices de seguro por imóvel",
+    "new": "Nova apólice",
+    "empty": "Nenhum seguro registrado.",
+    "insurer": "Seguradora",
+    "policyNo": "Nº da apólice",
+    "premium": "Prêmio anual",
+    "start": "Início",
+    "end": "Vencimento"
   },
   "insuranceType": {
-    "GEBAEUDE": "Building insurance",
-    "HAFTPFLICHT": "Liability",
-    "GLAS": "Glass insurance",
-    "ELEMENTAR": "Natural hazards",
-    "RECHTSSCHUTZ": "Legal protection",
-    "SONSTIGES": "Other"
+    "GEBAEUDE": "Seguro predial",
+    "HAFTPFLICHT": "Responsabilidade civil",
+    "GLAS": "Seguro de vidros",
+    "ELEMENTAR": "Riscos naturais",
+    "RECHTSSCHUTZ": "Proteção jurídica",
+    "SONSTIGES": "Outros"
   },
   "grundsteuer": {
-    "title": "Property tax",
-    "subtitle": "Property tax data per property (2025 reform)",
-    "edit": "Edit property tax",
-    "aktenzeichen": "Reference no.",
-    "grundsteuerwert": "Assessed value",
-    "messbetrag": "Tax base amount",
-    "hebesatz": "Multiplier (%)",
-    "yearly": "Annual property tax"
+    "title": "Imposto predial",
+    "subtitle": "Dados de imposto predial por imóvel (reforma de 2025)",
+    "edit": "Editar imposto predial",
+    "aktenzeichen": "Número de referência",
+    "grundsteuerwert": "Valor avaliado",
+    "messbetrag": "Base de cálculo do imposto",
+    "hebesatz": "Multiplicador (%)",
+    "yearly": "Imposto predial anual"
   },
   "niche": {
     "bookAsCost": "Book as cost",
@@ -754,10 +754,10 @@
     "openItemsCsv": "Itens em aberto (CSV)"
   },
   "accountType": {
-    "BANK": "Bank account",
-    "KAUTION": "Deposit account",
-    "RUECKLAGE": "Reserve account",
-    "SACHKONTO": "Ledger account"
+    "BANK": "Conta bancária",
+    "KAUTION": "Conta de caução",
+    "RUECKLAGE": "Conta de reserva",
+    "SACHKONTO": "Conta contábil"
   },
   "chargeType": {
     "MIETE": "Aluguel",
@@ -822,11 +822,11 @@
     "SONSTIGE": "Outros"
   },
   "allocationMethod": {
-    "AREA": "Living area",
-    "UNITS": "Unit count",
-    "PERSONS": "Occupants",
-    "CONSUMPTION": "Consumption",
-    "MEA": "Co-ownership shares"
+    "AREA": "Área privativa",
+    "UNITS": "Quantidade de unidades",
+    "PERSONS": "Ocupantes",
+    "CONSUMPTION": "Consumo",
+    "MEA": "Frações ideais"
   },
   "portal": {
     "welcome": "Boas-vindas",
@@ -883,23 +883,23 @@
     "addTime": "Registrar +15 min"
   },
   "ticketStatus": {
-    "OFFEN": "Open",
-    "IN_ARBEIT": "In progress",
-    "WARTEND": "Waiting",
-    "ERLEDIGT": "Done"
+    "OFFEN": "Em aberto",
+    "IN_ARBEIT": "Em andamento",
+    "WARTEND": "Aguardando",
+    "ERLEDIGT": "Concluído"
   },
   "ticketCategory": {
-    "STOERUNG": "Fault report",
-    "SCHADEN": "Damage report",
-    "WARTUNG": "Maintenance",
-    "RECHNUNG": "Invoice approval",
-    "VERTRAG": "Contract matter",
-    "SONSTIGES": "Other"
+    "STOERUNG": "Ocorrência",
+    "SCHADEN": "Dano",
+    "WARTUNG": "Manutenção",
+    "RECHNUNG": "Aprovação de fatura",
+    "VERTRAG": "Assunto contratual",
+    "SONSTIGES": "Outros"
   },
   "ticketPriority": {
-    "NIEDRIG": "Low",
-    "MITTEL": "Medium",
-    "HOCH": "High"
+    "NIEDRIG": "Baixa",
+    "MITTEL": "Média",
+    "HOCH": "Alta"
   },
   "documents": {
     "title": "Documentos",
@@ -921,12 +921,12 @@
     "searchPlaceholder": "Pesquisar por nome…"
   },
   "documentCategory": {
-    "VERTRAG": "Contract",
-    "RECHNUNG": "Invoice",
-    "ERECHNUNG": "E-invoice",
-    "PROTOKOLL": "Minutes",
-    "ABRECHNUNG": "Statement",
-    "SONSTIGES": "Other"
+    "VERTRAG": "Contrato",
+    "RECHNUNG": "Fatura",
+    "ERECHNUNG": "Fatura eletrônica",
+    "PROTOKOLL": "Ata",
+    "ABRECHNUNG": "Demonstrativo",
+    "SONSTIGES": "Outros"
   },
   "meetings": {
     "title": "Assembleias de proprietários",
@@ -962,34 +962,34 @@
     "VERTAGT": "Postponed"
   },
   "weg": {
-    "title": "HOA management",
-    "subtitle": "Owners, economic plan, HOA fee, reserves, annual statement",
-    "property": "HOA property",
-    "noWeg": "No HOA properties. Create a property with management type HOA.",
-    "owners": "Owners",
-    "addOwner": "Assign owner",
-    "noOwners": "No owners assigned yet.",
-    "share": "Share of unit (‰)",
-    "totalMea": "Total MEA",
-    "meaTotalLabel": "Target total MEA (‰)",
-    "meaCheck": "MEA check",
-    "meaMismatch": "The sum of unit co-ownership shares differs from the property's target value. Please correct the units' MEA or the target value.",
-    "plan": "Economic plan",
-    "setPlan": "Set economic plan",
-    "planTotal": "Total cost (plan)",
-    "noPlan": "No economic plan for this year.",
-    "monthlyHausgeld": "HOA fee/month",
-    "yearlyHausgeld": "HOA fee/year",
-    "reserves": "Maintenance reserves",
-    "addReserve": "Add reserve",
-    "noReserves": "No reserves yet.",
-    "balance": "Balance",
-    "addTx": "Transaction",
-    "assets": "Assets report",
-    "assetsTotal": "Total reserves",
-    "annual": "Annual statement",
-    "actualTotal": "Total actual cost",
-    "noActual": "No actual costs (cost items) for this year."
+    "title": "Gestão de condomínio",
+    "subtitle": "Proprietários, orçamento, taxa condominial, reservas e demonstrativo anual",
+    "property": "Imóvel do condomínio",
+    "noWeg": "Nenhum imóvel de condomínio. Crie um imóvel com o tipo de administração Condomínio.",
+    "owners": "Proprietários",
+    "addOwner": "Atribuir proprietário",
+    "noOwners": "Nenhum proprietário atribuído.",
+    "share": "Fração da unidade (‰)",
+    "totalMea": "MEA total",
+    "meaTotalLabel": "MEA total desejado (‰)",
+    "meaCheck": "Verificação de MEA",
+    "meaMismatch": "A soma das frações ideais das unidades é diferente do valor definido para o imóvel. Corrija o MEA das unidades ou o valor desejado.",
+    "plan": "Orçamento",
+    "setPlan": "Definir orçamento",
+    "planTotal": "Custo total (orçado)",
+    "noPlan": "Nenhum orçamento para este ano.",
+    "monthlyHausgeld": "Taxa condominial/mês",
+    "yearlyHausgeld": "Taxa condominial/ano",
+    "reserves": "Reservas de manutenção",
+    "addReserve": "Adicionar reserva",
+    "noReserves": "Nenhuma reserva ainda.",
+    "balance": "Saldo",
+    "addTx": "Transação",
+    "assets": "Demonstrativo patrimonial",
+    "assetsTotal": "Total de reservas",
+    "annual": "Demonstrativo anual",
+    "actualTotal": "Custo total realizado",
+    "noActual": "Nenhum custo realizado (itens de custo) neste ano."
   },
   "assistant": {
     "title": "Assistente de IA",
@@ -1012,11 +1012,11 @@
     "legendMeeting": "Reunião"
   },
   "appointmentType": {
-    "BESICHTIGUNG": "Viewing",
-    "VERSAMMLUNG": "Meeting",
-    "WARTUNG": "Maintenance",
-    "FRIST": "Deadline",
-    "SONSTIGES": "Other"
+    "BESICHTIGUNG": "Visita",
+    "VERSAMMLUNG": "Reunião",
+    "WARTUNG": "Manutenção",
+    "FRIST": "Prazo",
+    "SONSTIGES": "Outros"
   },
   "audit": {
     "title": "Audit log",
