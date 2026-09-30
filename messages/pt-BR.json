@@ -146,7 +146,7 @@
     "saved": "Salvo",
     "tenantAddress": "Endereço da administração",
     "tenantAddressPlaceholder": "ex.: Rua Exemplo, 1, 12345 Cidade Exemplo",
-    "tenantAddressHint": "Usado, por exemplo, como endereço do locador na declaração do locador (Wohnungsgeberbestätigung)."
+    "tenantAddressHint": "Usado como endereço da administradora em documentos e comunicações."
   },
   "account": {
     "changePassword": "Alterar senha",
@@ -499,7 +499,7 @@
     "exportTenants": "Inquilinos (CSV)",
     "vacancy": "Vacância",
     "noVacancy": "Sem vacância.",
-    "portfolio": "Portfólio"
+    "portfolio": "Imóveis administrados"
   },
   "customFields": {
     "title": "Campos personalizados",
@@ -692,8 +692,8 @@
     "rent": "Aluguel líquido (sem encargos)"
   },
   "dunning": {
-    "title": "Cobrança do portfólio",
-    "subtitle": "Itens em aberto e débitos de todos os imóveis",
+    "title": "Cobranças em aberto",
+    "subtitle": "Cobranças e débitos em aberto de todos os imóveis administrados",
     "minDays": "Mín. de dias em atraso",
     "empty": "Nenhum débito pendente.",
     "property": "Imóvel",
