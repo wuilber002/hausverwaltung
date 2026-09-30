@@ -5,7 +5,7 @@ import { actingTenantId } from "@/lib/acting-tenant";
 import { prisma } from "@/lib/prisma";
 
 // Erlaubte Datumsformate (Mandanten-Einstellung, #18).
-export const DATE_FORMATS = ["de-DE", "en-GB", "en-US", "iso"] as const;
+export const DATE_FORMATS = ["de-DE", "en-GB", "en-US", "pt-BR", "iso"] as const;
 export type DateFormat = (typeof DATE_FORMATS)[number];
 
 // Effektives Datumsformat: Mandanten-Einstellung, sonst UI-Sprache (Altverhalten).

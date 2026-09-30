@@ -103,6 +103,7 @@ export function SetupWizard() {
               <select id="locale" name="locale" value={f.locale} onChange={set("locale")} className={selectCls}>
                 <option value="de">Deutsch</option>
                 <option value="en">English</option>
+                <option value="pt-BR">Português (Brasil)</option>
               </select>
             </div>
           </div>

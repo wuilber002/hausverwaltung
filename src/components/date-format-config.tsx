@@ -14,6 +14,7 @@ const OPTIONS = [
   { value: "de-DE", key: "de" },
   { value: "en-GB", key: "en_gb" },
   { value: "en-US", key: "en_us" },
+  { value: "pt-BR", key: "pt_br" },
   { value: "iso", key: "iso" },
 ];
 

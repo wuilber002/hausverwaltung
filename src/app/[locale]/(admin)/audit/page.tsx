@@ -2,6 +2,7 @@ import { getTranslations, getLocale } from "next-intl/server";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { requireRole } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
+import { intlLocale } from "@/lib/format";
 import { Link } from "@/i18n/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,7 @@ const PAGE_SIZE = 50;
 const ACTIONS = ["CREATE", "UPDATE", "DELETE"];
 
 function dateTime(d: Date, locale: string) {
-  return new Intl.DateTimeFormat(locale === "de" ? "de-DE" : "en-US", { dateStyle: "medium", timeStyle: "short" }).format(d);
+  return new Intl.DateTimeFormat(intlLocale(locale), { dateStyle: "medium", timeStyle: "short" }).format(d);
 }
 
 export default async function AuditPage({

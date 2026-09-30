@@ -1,6 +1,10 @@
+export function intlLocale(locale: string) {
+  return locale === "de" ? "de-DE" : locale === "en" ? "en-US" : locale;
+}
+
 export function money(value: number | string, locale = "de") {
   const n = typeof value === "string" ? Number(value) : value;
-  return new Intl.NumberFormat(locale === "de" ? "de-DE" : "en-US", {
+  return new Intl.NumberFormat(intlLocale(locale), {
     style: "currency",
     currency: "EUR",
   }).format(n);
@@ -9,7 +13,7 @@ export function money(value: number | string, locale = "de") {
 // Dezimalzahl lokalisiert, bis 4 Nachkommastellen (z. B. MEA 53,9, #40).
 export function decimal(value: number | null | undefined, locale = "de") {
   if (value == null) return "—";
-  return new Intl.NumberFormat(locale === "de" ? "de-DE" : "en-US", { maximumFractionDigits: 4 }).format(value);
+  return new Intl.NumberFormat(intlLocale(locale), { maximumFractionDigits: 4 }).format(value);
 }
 
 // Datumsformat. `fmt` akzeptiert die UI-Sprache ("de"/"en", Altverhalten), eine
@@ -19,7 +23,7 @@ export function date(value: Date | string | null | undefined, fmt = "de") {
   if (!value) return "—";
   const d = typeof value === "string" ? new Date(value) : value;
   if (fmt === "iso") return d.toISOString().slice(0, 10);
-  const locale = fmt === "de" ? "de-DE" : fmt === "en" ? "en-US" : fmt;
+  const locale = intlLocale(fmt);
   return new Intl.DateTimeFormat(locale).format(d);
 }
 
@@ -36,6 +40,6 @@ export function dateTime(value: Date | string | null | undefined, fmt = "de") {
     );
     return `${p.year}-${p.month}-${p.day} ${p.hour}:${p.minute}`;
   }
-  const locale = fmt === "de" ? "de-DE" : fmt === "en" ? "en-US" : fmt;
+  const locale = intlLocale(fmt);
   return new Intl.DateTimeFormat(locale, { dateStyle: "short", timeStyle: "short", timeZone: tz }).format(d);
 }

@@ -127,6 +127,7 @@
       "de": "31.12.2026 (TT.MM.JJJJ)",
       "en_gb": "31/12/2026 (TT/MM/JJJJ)",
       "en_us": "12/31/2026 (MM/TT/JJJJ)",
+      "pt_br": "31/12/2026 (TT/MM/JJJJ)",
       "iso": "2026-12-31 (ISO)"
     },
     "linkedPerson": "Verknüpfte Person (für Portal)",
