@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+zero='0000000000000000000000000000000000000000'
+fork_main="$(git rev-parse --verify refs/remotes/origin/main)"
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ "$local_sha" = "$zero" ] && continue
+  if [ "$remote_sha" = "$zero" ]; then
+    range="$fork_main..$local_sha"
+  else
+    range="$remote_sha..$local_sha"
+  fi
+  "$repo_root/scripts/check-upstream-issue-refs.sh" --range "$range"
+done
