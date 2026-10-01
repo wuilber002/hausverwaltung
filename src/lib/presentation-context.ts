@@ -22,8 +22,9 @@ export function resolvePresentationContext(
   tenant: TenantPresentationFields,
   userLocale: string | null | undefined,
 ): PresentationContext {
-  const profileId = isMarketProfileId(tenant.marketProfile ?? "")
-    ? tenant.marketProfile
+  const requestedProfile = tenant.marketProfile ?? "";
+  const profileId: MarketProfileId = isMarketProfileId(requestedProfile)
+    ? requestedProfile
     : LEGACY_MARKET_PROFILE;
   const profile = marketProfile(profileId);
   const locale = userLocale || profile.defaultLocale;
