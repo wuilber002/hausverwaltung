@@ -209,7 +209,8 @@ export async function apiDelete(p: ApiPrincipal, entity: string, id: string) {
   if (def.special === "user") {
     const target = await db.user.findFirst({ where: { id, tenantId: p.tenantId }, select: { id: true, role: true } });
     if (!target) throw new ApiWriteError("Nicht gefunden", 404);
-    const actor: SessionUser = { id: p.userId, tenantId: p.tenantId, homeTenantId: p.tenantId, superAdmin: false, role: p.role, locale: "de" };
+    const presentation = await getTenantPresentationContext(p.tenantId, "de");
+    const actor: SessionUser = { id: p.userId, tenantId: p.tenantId, homeTenantId: p.tenantId, superAdmin: false, role: p.role, locale: "de", presentation };
     if (!canDeleteUser(actor, target.role, target.id)) throw new ApiWriteError("Löschen nicht erlaubt", 403);
     await db.user.delete({ where: { id: target.id } });
     return { id, deleted: 1 };
