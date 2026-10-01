@@ -2,6 +2,7 @@ import type { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { roleAllows, WRITE_ROLES, assignableRoles, canDeleteUser, type SessionUser } from "@/lib/rbac";
 import type { ApiPrincipal } from "@/lib/api-auth";
+import { getTenantPresentationContext } from "@/lib/tenant-presentation-context";
 import * as S from "@/lib/schemas";
 
 // Generische, mandanten-gescopte Schreibschicht für REST-API + MCP.
@@ -134,7 +135,8 @@ export async function apiCreate(p: ApiPrincipal, entity: string, body: Record<st
 
   if (def.special === "user") {
     const bcrypt = (await import("bcryptjs")).default;
-    const actor: SessionUser = { id: p.userId, tenantId, homeTenantId: tenantId, superAdmin: false, role: p.role, name: p.name, locale: "de" };
+    const presentation = await getTenantPresentationContext(tenantId, "de");
+    const actor: SessionUser = { id: p.userId, tenantId, homeTenantId: tenantId, superAdmin: false, role: p.role, name: p.name, locale: "de", presentation };
     const { name, email, password, role, personId } = data as {
       name: string; email: string; password: string; role: SessionUser["role"]; personId?: string;
     };
