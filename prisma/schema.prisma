@@ -91,6 +91,13 @@ enum PropertyType {
   GEMISCHT
 }
 
+// Perfil operacional da organização. Não é idioma da interface: idioma é
+// preferência individual do usuário; o perfil seleciona defaults de mercado.
+enum MarketProfile {
+  DE
+  BR
+}
+
 enum UnitType {
   WOHNUNG
   GEWERBE
@@ -112,6 +119,10 @@ model Tenant {
   id         String     @id @default(cuid())
   name       String
   address    String? // Anschrift der Verwaltung (z. B. Wohnungsgeberbestätigung, #41)
+  marketProfile        MarketProfile @default(DE)
+  marketProfileVersion Int           @default(1)
+  timeZone             String        @default("Europe/Berlin")
+  currencyCode         String        @default("EUR")
   createdAt  DateTime   @default(now())
   users      User[]
   properties Property[]
