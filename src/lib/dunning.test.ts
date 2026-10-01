@@ -11,6 +11,7 @@ const base = {
   dueDate: new Date("2026-05-03T00:00:00Z"),
   open: 800,
   fee: 5,
+  format: { locale: "de", dateFormat: "de", timeZone: "Europe/Berlin", currencyCode: "EUR" },
 };
 
 describe("dunningDocument (#28)", () => {

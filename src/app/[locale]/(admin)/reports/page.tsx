@@ -1,5 +1,5 @@
 import { Download, Building2, DoorOpen, KeyRound, DoorClosed, Coins } from "lucide-react";
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations, } from "next-intl/server";
 import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { money } from "@/lib/format";
@@ -17,7 +17,6 @@ import {
 export default async function ReportsPage() {
   const user = await requireUser();
   const t = await getTranslations();
-  const locale = await getLocale();
   const tenantId = user.tenantId;
   const now = new Date();
 
@@ -51,7 +50,7 @@ export default async function ReportsPage() {
     { key: "units", value: String(units.length), icon: DoorOpen },
     { key: "occupied", value: String(occupied.length), icon: KeyRound },
     { key: "vacant", value: String(vacant.length), icon: DoorClosed },
-    { key: "openItemsValue", value: money(totalOpen, locale), icon: Coins },
+    { key: "openItemsValue", value: money(totalOpen, user.presentation), icon: Coins },
   ];
 
   const unitCount = (p: (typeof properties)[number]) => p.buildings.reduce((a, b) => a + b._count.units, 0);

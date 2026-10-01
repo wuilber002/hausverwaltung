@@ -1,4 +1,4 @@
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations, } from "next-intl/server";
 import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { money } from "@/lib/format";
@@ -16,7 +16,6 @@ import {
 export default async function ZensusPage() {
   const user = await requireUser();
   const t = await getTranslations();
-  const locale = await getLocale();
   const now = new Date();
 
   const units = await prisma.unit.findMany({
@@ -65,7 +64,7 @@ export default async function ZensusPage() {
                       <TableCell>{t(`unitType.${u.type}`)}</TableCell>
                       <TableCell className="text-right">{String(u.area)}</TableCell>
                       <TableCell className="text-right">{u.rooms ? String(u.rooms) : t("common.none")}</TableCell>
-                      <TableCell className="text-right">{l ? money(Number(l.rentCold), locale) : t("common.none")}</TableCell>
+                      <TableCell className="text-right">{l ? money(Number(l.rentCold), user.presentation) : t("common.none")}</TableCell>
                       <TableCell>
                         {l ? (
                           <Badge variant="secondary">{t("units.occupied")}</Badge>

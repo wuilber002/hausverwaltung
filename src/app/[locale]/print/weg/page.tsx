@@ -1,4 +1,4 @@
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations, } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
@@ -15,7 +15,6 @@ export default async function PrintWegPage({
   const sp = await searchParams;
   const user = await requireUser();
   const t = await getTranslations();
-  const locale = await getLocale();
   const tenantId = user.tenantId;
 
   const propertyId = sp.propertyId;
@@ -72,9 +71,9 @@ export default async function PrintWegPage({
             return (
               <tr key={o.id} className="border-b border-neutral-300">
                 <td className="py-1">{o.person.firstName} {o.person.lastName}</td>
-                <td className="py-1 text-right">{money(alloc, locale)}</td>
-                <td className="py-1 text-right">{money(prepay, locale)}</td>
-                <td className="py-1 text-right font-medium">{money(bal, locale)}</td>
+                <td className="py-1 text-right">{money(alloc, user.presentation)}</td>
+                <td className="py-1 text-right">{money(prepay, user.presentation)}</td>
+                <td className="py-1 text-right font-medium">{money(bal, user.presentation)}</td>
               </tr>
             );
           })}
@@ -82,7 +81,7 @@ export default async function PrintWegPage({
         <tfoot>
           <tr className="border-t-2 border-black font-semibold">
             <td className="py-1">{t("weg.actualTotal")}</td>
-            <td className="py-1 text-right">{money(actualTotal, locale)}</td>
+            <td className="py-1 text-right">{money(actualTotal, user.presentation)}</td>
             <td colSpan={2} />
           </tr>
         </tfoot>
@@ -94,12 +93,12 @@ export default async function PrintWegPage({
           {reserveBalances.map(({ r, balance }) => (
             <tr key={r.id} className="border-b border-neutral-300">
               <td className="py-1">{r.name}</td>
-              <td className="py-1 text-right">{money(balance, locale)}</td>
+              <td className="py-1 text-right">{money(balance, user.presentation)}</td>
             </tr>
           ))}
           <tr className="border-t-2 border-black font-semibold">
             <td className="py-1">{t("weg.assetsTotal")}</td>
-            <td className="py-1 text-right">{money(assetsTotal, locale)}</td>
+            <td className="py-1 text-right">{money(assetsTotal, user.presentation)}</td>
           </tr>
         </tbody>
       </table>

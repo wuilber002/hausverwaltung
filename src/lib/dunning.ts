@@ -1,4 +1,5 @@
 import { money, date } from "@/lib/format";
+import type { FormattingContext } from "@/lib/format";
 
 export interface DunningInput {
   level: number;
@@ -11,6 +12,7 @@ export interface DunningInput {
   dueDate: Date;
   open: number; // offener Betrag
   fee: number; // Mahngebühr
+  format: FormattingContext;
 }
 
 /**
@@ -28,10 +30,10 @@ export function dunningDocument(input: DunningInput): { title: string; lines: st
       "",
       `${input.propertyName} · ${input.unitLabel}`,
       "",
-      `Offener Posten (fällig ${date(input.dueDate)}):`,
-      `${input.chargeTypeLabel} · ${date(input.period)}: ${money(input.open)}`,
-      ...(input.fee > 0 ? [`Mahngebühr: ${money(input.fee)}`] : []),
-      `Offener Gesamtbetrag: ${money(total)}`,
+      `Offener Posten (fällig ${date(input.dueDate, input.format)}):`,
+      `${input.chargeTypeLabel} · ${date(input.period, input.format)}: ${money(input.open, input.format)}`,
+      ...(input.fee > 0 ? [`Mahngebühr: ${money(input.fee, input.format)}`] : []),
+      `Offener Gesamtbetrag: ${money(total, input.format)}`,
       "",
       "Wir bitten um Ausgleich innerhalb von 14 Tagen.",
       "",

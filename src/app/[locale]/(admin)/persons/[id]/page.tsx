@@ -5,7 +5,6 @@ import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
 import { money, date, dateTime, decimal } from "@/lib/format";
-import { getDateLocale } from "@/lib/date-locale";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +18,6 @@ export default async function PersonDetailPage({ params }: { params: Promise<{ i
   const user = await requireUser();
   const t = await getTranslations();
   const locale = await getLocale();
-  const df = await getDateLocale(locale);
 
   const person = await prisma.person.findFirst({
     where: { id, tenantId: user.tenantId },
@@ -157,7 +155,7 @@ export default async function PersonDetailPage({ params }: { params: Promise<{ i
                   {r.lease.unit.building.property.name} · {r.lease.unit.label}
                 </span>
                 <span className="text-muted-foreground">
-                  {money(Number(r.lease.rentCold), locale)} · {date(r.lease.startDate, df)}
+                  {money(Number(r.lease.rentCold), user.presentation)} · {date(r.lease.startDate, user.presentation)}
                 </span>
               </Link>
             ))
@@ -213,7 +211,7 @@ export default async function PersonDetailPage({ params }: { params: Promise<{ i
                       )}
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      {dateTime(c.date, df)}
+                      {dateTime(c.date, user.presentation)}
                       {c.dir === "in" ? ` · ${c.from}` : ""}
                     </div>
                   </div>
@@ -225,7 +223,7 @@ export default async function PersonDetailPage({ params }: { params: Promise<{ i
                     )}
                     <EmailViewDialog
                       message={{
-                        from: c.from, toAddress: c.toAddress, cc: c.cc, date: dateTime(c.date, df),
+                        from: c.from, toAddress: c.toAddress, cc: c.cc, date: dateTime(c.date, user.presentation),
                         subject: c.subject, body: c.body, attachments: c.attachments,
                       }}
                     />

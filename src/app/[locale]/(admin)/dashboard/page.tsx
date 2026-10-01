@@ -18,7 +18,6 @@ import { Link } from "@/i18n/navigation";
 import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { money, date, intlLocale } from "@/lib/format";
-import { getDateLocale } from "@/lib/date-locale";
 import {
   Card,
   CardContent,
@@ -47,7 +46,6 @@ export default async function DashboardPage() {
   const user = await requireUser();
   const t = await getTranslations();
   const locale = await getLocale();
-  const df = await getDateLocale(locale);
   const tenantId = user.tenantId;
   const now = new Date();
 
@@ -108,8 +106,8 @@ export default async function DashboardPage() {
     { key: "units", value: String(totalUnits), icon: DoorOpen },
     { key: "occupied", value: String(occupied), icon: KeyRound, sub: `${t("dashboard.occupancyRate")}: ${rate}%` },
     { key: "vacant", value: String(vacant), icon: DoorClosed },
-    { key: "monthlyRent", value: money(monthlyRent, locale), icon: Banknote },
-    { key: "openItemsValue", value: money(totalOpen, locale), icon: Coins },
+    { key: "monthlyRent", value: money(monthlyRent, user.presentation), icon: Banknote },
+    { key: "openItemsValue", value: money(totalOpen, user.presentation), icon: Coins },
     { key: "openTickets", value: String(openTickets), icon: Wrench },
     { key: "dueMaintenance", value: String(dueMaintenance), icon: CalendarClock },
   ];
@@ -170,7 +168,7 @@ export default async function DashboardPage() {
           <CardContent>
             <MonthlyBars
               data={monthly}
-              locale={locale}
+              format={user.presentation}
               labels={{ soll: t("dashboard.chartSoll"), zahlung: t("dashboard.chartZahlung") }}
             />
           </CardContent>
@@ -247,7 +245,7 @@ export default async function DashboardPage() {
                     <span>{task.title}</span>
                     {task.dueDate ? (
                       <span className={`ml-2 text-xs ${task.dueDate < now ? "text-destructive" : "text-muted-foreground"}`}>
-                        {date(task.dueDate, df)}
+                        {date(task.dueDate, user.presentation)}
                       </span>
                     ) : null}
                   </div>

@@ -1,4 +1,4 @@
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations, } from "next-intl/server";
 import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { money } from "@/lib/format";
@@ -24,7 +24,6 @@ export default async function DunningPage({
   const sp = await searchParams;
   const user = await requireUser();
   const t = await getTranslations();
-  const locale = await getLocale();
   const minDays = Math.max(0, Number(sp.minDays) || 0);
   const now = new Date();
 
@@ -122,7 +121,7 @@ export default async function DunningPage({
                     <TableCell className="text-right">{r.opGemahnt}</TableCell>
                     <TableCell className="text-right text-destructive">{r.opNichtGemahnt}</TableCell>
                     <TableCell className="text-right">{r.maxVerzug}</TableCell>
-                    <TableCell className="text-right font-medium">{money(r.schuld, locale)}</TableCell>
+                    <TableCell className="text-right font-medium">{money(r.schuld, user.presentation)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -132,7 +131,7 @@ export default async function DunningPage({
                   <TableCell />
                   <TableCell className="text-right font-semibold">{totalOp}</TableCell>
                   <TableCell colSpan={3} />
-                  <TableCell className="text-right font-semibold">{money(totalSchuld, locale)}</TableCell>
+                  <TableCell className="text-right font-semibold">{money(totalSchuld, user.presentation)}</TableCell>
                 </TableRow>
               </TableFooter>
             </Table>

@@ -1,4 +1,3 @@
-import { getLocale } from "next-intl/server";
 import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
@@ -7,23 +6,22 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/user-menu";
 import { NotificationBell } from "@/components/notification-bell";
 import { InfoDrawer } from "@/components/info-drawer";
+import { dateTime } from "@/lib/format";
 
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const user = await requireUser();
-  const locale = await getLocale();
   const [notifs, unread, tenant] = await Promise.all([
     prisma.notification.findMany({ where: { userId: user.id }, orderBy: { createdAt: "desc" }, take: 20 }),
     prisma.notification.count({ where: { userId: user.id, read: false } }),
     prisma.tenant.findUnique({ where: { id: user.tenantId }, select: { name: true } }),
   ]);
-  const dtf = new Intl.DateTimeFormat(locale, { dateStyle: "short", timeStyle: "short" });
   const notifItems = notifs.map((n) => ({
     id: n.id,
     title: n.title,
     body: n.body,
     link: n.link,
     read: n.read,
-    createdAt: dtf.format(n.createdAt),
+    createdAt: dateTime(n.createdAt, user.presentation),
   }));
 
   return (

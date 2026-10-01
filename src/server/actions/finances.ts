@@ -292,6 +292,7 @@ export async function emailDunning(_p: ActionState, fd: FormData): Promise<Actio
     dueDate: charge.dueDate,
     open,
     fee,
+    format: user.presentation,
   });
   const title = built.title;
   const total = open + fee;
@@ -314,7 +315,7 @@ export async function emailDunning(_p: ActionState, fd: FormData): Promise<Actio
       tenantId: user.tenantId,
       toAddress: renter.email,
       subject: `${title} · ${property.name}`,
-      body: `Sehr geehrte/r ${renter.firstName} ${renter.lastName},\n\nanbei ${title.toLowerCase()} über ${money(total)}.\n\nMit freundlichen Grüßen\n${property.tenant.name}`,
+      body: `Sehr geehrte/r ${renter.firstName} ${renter.lastName},\n\nanbei ${title.toLowerCase()} über ${money(total, user.presentation)}.\n\nMit freundlichen Grüßen\n${property.tenant.name}`,
       status: "ENTWURF",
       attachments: { create: [{ documentId: doc.id }] },
     },

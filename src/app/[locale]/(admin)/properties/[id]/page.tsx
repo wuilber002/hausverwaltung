@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { money, date, decimal } from "@/lib/format";
-import { getDateLocale } from "@/lib/date-locale";
 import { computeMgmtFee, type FeeType } from "@/lib/fee";
 import { buildAreaStatement, areaTimeWeights, VACANCY_ID } from "@/lib/allocation/area-time";
 import { AreaAllocationDialog } from "@/components/area-dialogs";
@@ -46,7 +45,6 @@ export default async function PropertyDetailPage({
   const user = await requireUser();
   const t = await getTranslations();
   const locale = await getLocale();
-  const df = await getDateLocale(locale);
 
   const property = await prisma.property.findFirst({
     where: { id, tenantId: user.tenantId },
@@ -206,7 +204,7 @@ export default async function PropertyDetailPage({
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            {money(mgmtFee, locale)} <span className="text-sm font-normal text-muted-foreground">/ {t("fee.perMonth")}</span>
+            {money(mgmtFee, user.presentation)} <span className="text-sm font-normal text-muted-foreground">/ {t("fee.perMonth")}</span>
           </div>
         </CardContent>
       </Card>
@@ -245,10 +243,10 @@ export default async function PropertyDetailPage({
                     </TableCell>
                     <TableCell className="text-right">{Number(a.area).toFixed(2)} m²</TableCell>
                     <TableCell className="text-right">
-                      {a.pricePerSqm != null ? money(Number(a.pricePerSqm), locale) : t("common.none")}
+                      {a.pricePerSqm != null ? money(Number(a.pricePerSqm), user.presentation) : t("common.none")}
                     </TableCell>
                     <TableCell className="text-muted-foreground">
-                      {date(a.from, df)} – {a.to ? date(a.to, df) : "…"}
+                      {date(a.from, user.presentation)} – {a.to ? date(a.to, user.presentation) : "…"}
                     </TableCell>
                     <TableCell>
                       <div className="flex justify-end gap-1">
@@ -305,13 +303,13 @@ export default async function PropertyDetailPage({
                     <TableRow key={l.id}>
                       <TableCell>{l.id === VACANCY_ID ? t("areaModel.vacancy") : areaData.nameById.get(l.id) ?? l.id}</TableCell>
                       <TableCell className="text-right text-muted-foreground">{l.weight.toFixed(2)} m²</TableCell>
-                      <TableCell className="text-right">{money(l.allocated, locale)}</TableCell>
+                      <TableCell className="text-right">{money(l.allocated, user.presentation)}</TableCell>
                     </TableRow>
                   ))}
                   <TableRow>
                     <TableCell className="font-medium">{t("statements.total")}</TableCell>
                     <TableCell />
-                    <TableCell className="text-right font-medium">{money(areaData.stmt.totalUmlage, locale)}</TableCell>
+                    <TableCell className="text-right font-medium">{money(areaData.stmt.totalUmlage, user.presentation)}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

@@ -4,6 +4,7 @@ import { roleAllows } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { simplePdf } from "@/lib/pdf";
 import { dunningDocument } from "@/lib/dunning";
+import { getTenantPresentationContext } from "@/lib/tenant-presentation-context";
 
 // Mahnung / Zahlungserinnerung zu einer Sollstellung direkt als PDF (statt der
 // HTML-Vorschauseite; umgeht auch das Darkmode-Darstellungsproblem). Spiegelt
@@ -15,6 +16,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ chargeI
 
   const { chargeId } = await params;
   const tenantId = await actingTenantId(session.user);
+  const presentation = await getTenantPresentationContext(tenantId, session.user.locale ?? "de");
   const charge = await prisma.charge.findFirst({
     where: { id: chargeId, tenantId },
     include: {
@@ -47,6 +49,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ chargeI
     dueDate: charge.dueDate,
     open,
     fee: dun ? Number(dun.fee) : 0,
+    format: presentation,
   });
 
   const pdf = simplePdf(doc.title, doc.lines);

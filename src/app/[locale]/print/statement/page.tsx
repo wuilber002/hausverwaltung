@@ -1,4 +1,4 @@
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations, } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/rbac";
 import { money } from "@/lib/format";
@@ -14,7 +14,6 @@ export default async function PrintStatementPage({
   const sp = await searchParams;
   const user = await requireUser();
   const t = await getTranslations();
-  const locale = await getLocale();
 
   const propertyId = sp.propertyId;
   const year = Number(sp.year) || new Date().getFullYear();
@@ -49,10 +48,10 @@ export default async function PrintStatementPage({
           {st.units.map((l) => (
             <tr key={l.key} className="border-b border-neutral-300">
               <td className="py-1">{l.label}</td>
-              <td className="py-1 text-right">{money(l.allocated, locale)}</td>
-              <td className="py-1 text-right">{money(l.prepayment, locale)}</td>
+              <td className="py-1 text-right">{money(l.allocated, user.presentation)}</td>
+              <td className="py-1 text-right">{money(l.prepayment, user.presentation)}</td>
               <td className="py-1 text-right font-medium">
-                {money(l.balance, locale)} {l.balance >= 0 ? t("statements.credit") : t("statements.arrears")}
+                {money(l.balance, user.presentation)} {l.balance >= 0 ? t("statements.credit") : t("statements.arrears")}
               </td>
             </tr>
           ))}
@@ -60,7 +59,7 @@ export default async function PrintStatementPage({
         <tfoot>
           <tr className="border-t-2 border-black font-semibold">
             <td className="py-1">{t("statements.total")}</td>
-            <td className="py-1 text-right">{money(st.totalUmlage, locale)}</td>
+            <td className="py-1 text-right">{money(st.totalUmlage, user.presentation)}</td>
             <td colSpan={2} />
           </tr>
         </tfoot>

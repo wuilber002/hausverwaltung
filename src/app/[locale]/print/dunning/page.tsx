@@ -1,9 +1,8 @@
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations, } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { money, date } from "@/lib/format";
-import { getDateLocale } from "@/lib/date-locale";
 import { PrintButton } from "@/components/print-button";
 
 // Druckbare Mahnung / Zahlungserinnerung zu einer Sollstellung.
@@ -15,8 +14,6 @@ export default async function PrintDunningPage({
   const sp = await searchParams;
   const user = await requireUser();
   const t = await getTranslations();
-  const locale = await getLocale();
-  const df = await getDateLocale(locale);
 
   const chargeId = sp.chargeId;
   if (!chargeId) notFound();
@@ -68,7 +65,7 @@ export default async function PrintDunningPage({
         </div>
       )}
 
-      <div className="mb-2 text-right text-neutral-500">{date(new Date(), df)}</div>
+      <div className="mb-2 text-right text-neutral-500">{date(new Date(), user.presentation)}</div>
       <h1 className="mb-4 text-lg font-bold">{title}</h1>
 
       <p className="mb-4">
@@ -78,18 +75,18 @@ export default async function PrintDunningPage({
       <table className="mb-4 w-full border-collapse">
         <tbody>
           <tr className="border-b border-neutral-300">
-            <td className="py-1">{t(`chargeType.${charge.type}`)} · {date(charge.period, df)}</td>
-            <td className="py-1 text-right">{money(open, locale)}</td>
+            <td className="py-1">{t(`chargeType.${charge.type}`)} · {date(charge.period, user.presentation)}</td>
+            <td className="py-1 text-right">{money(open, user.presentation)}</td>
           </tr>
           {fee > 0 && (
             <tr className="border-b border-neutral-300">
               <td className="py-1">{t("print.dunningFee")}</td>
-              <td className="py-1 text-right">{money(fee, locale)}</td>
+              <td className="py-1 text-right">{money(fee, user.presentation)}</td>
             </tr>
           )}
           <tr className="border-t-2 border-black font-semibold">
             <td className="py-1">{t("print.dunningTotal")}</td>
-            <td className="py-1 text-right">{money(total, locale)}</td>
+            <td className="py-1 text-right">{money(total, user.presentation)}</td>
           </tr>
         </tbody>
       </table>

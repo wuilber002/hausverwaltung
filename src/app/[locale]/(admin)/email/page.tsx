@@ -1,9 +1,8 @@
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations, } from "next-intl/server";
 import { Send, Mail, Paperclip } from "lucide-react";
 import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { date } from "@/lib/format";
-import { getDateLocale } from "@/lib/date-locale";
 import { isMailerConfigured } from "@/lib/adapters/mailer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,8 +24,6 @@ import { sendEmail, deleteEmail } from "@/server/actions/email";
 export default async function EmailPage() {
   const user = await requireUser();
   const t = await getTranslations();
-  const locale = await getLocale();
-  const df = await getDateLocale(locale);
 
   const [messages, tenant, persons, documents, properties, templates] = await Promise.all([
     prisma.emailMessage.findMany({
@@ -129,7 +126,7 @@ export default async function EmailPage() {
                       {m.error ? <span className="ml-2 text-xs text-destructive">{m.error}</span> : null}
                     </TableCell>
                     <TableCell className="text-muted-foreground">
-                      {m.sentAt ? date(m.sentAt, df) : date(m.createdAt, df)}
+                      {m.sentAt ? date(m.sentAt, user.presentation) : date(m.createdAt, user.presentation)}
                     </TableCell>
                     <TableCell>
                       <div className="flex justify-end gap-1">

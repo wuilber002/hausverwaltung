@@ -1,11 +1,10 @@
 import { ArrowLeft, X, Check } from "lucide-react";
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations, } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
 import { money, date } from "@/lib/format";
-import { getDateLocale } from "@/lib/date-locale";
 import { depositInterest } from "@/lib/deposit";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -40,8 +39,6 @@ export default async function LeaseDetailPage({ params }: { params: Promise<{ id
   const { id } = await params;
   const user = await requireUser();
   const t = await getTranslations();
-  const locale = await getLocale();
-  const df = await getDateLocale(locale);
 
   const wgTenant = await prisma.tenant.findUnique({ where: { id: user.tenantId }, select: { name: true, address: true } });
   const lease = await prisma.lease.findFirst({
@@ -98,7 +95,7 @@ export default async function LeaseDetailPage({ params }: { params: Promise<{ id
             {lease.unit.building.property.name} · {lease.unit.label}
           </h1>
           <p className="text-sm text-muted-foreground">
-            {date(lease.startDate, df)} – {lease.endDate ? date(lease.endDate, df) : t("leases.unlimited")}
+            {date(lease.startDate, user.presentation)} – {lease.endDate ? date(lease.endDate, user.presentation) : t("leases.unlimited")}
           </p>
         </div>
         <div className="flex gap-1">
@@ -187,21 +184,21 @@ export default async function LeaseDetailPage({ params }: { params: Promise<{ id
                 return (
                   <div className="flex items-start justify-between">
                     <div className="space-y-0.5 text-sm">
-                      <div className="font-medium">{money(Number(dep.amount), locale)}</div>
+                      <div className="font-medium">{money(Number(dep.amount), user.presentation)}</div>
                       <div className="text-muted-foreground">
                         {t(`depositType.${dep.type}`)}
                         {dep.account ? ` · ${dep.account.name}` : ""}
-                        {dep.receivedDate ? ` · ${date(dep.receivedDate, df)}` : ""}
+                        {dep.receivedDate ? ` · ${date(dep.receivedDate, user.presentation)}` : ""}
                       </div>
                       {interest > 0 && (
                         <div className="text-muted-foreground">
-                          {t("deposit.interest")}: {money(interest, locale)} ·{" "}
-                          {t("deposit.total")}: {money(Number(dep.amount) + interest, locale)}
+                          {t("deposit.interest")}: {money(interest, user.presentation)} ·{" "}
+                          {t("deposit.total")}: {money(Number(dep.amount) + interest, user.presentation)}
                         </div>
                       )}
                       {dep.returnedDate && (
                         <div className="text-xs text-muted-foreground">
-                          {t("deposit.returnedDate")}: {date(dep.returnedDate, df)}
+                          {t("deposit.returnedDate")}: {date(dep.returnedDate, user.presentation)}
                         </div>
                       )}
                     </div>
@@ -218,7 +215,7 @@ export default async function LeaseDetailPage({ params }: { params: Promise<{ id
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
           <CardTitle className="text-base">
-            {t("rentComponent.title")} · {t("leases.warmRent")}: {money(warm, locale)}
+            {t("rentComponent.title")} · {t("leases.warmRent")}: {money(warm, user.presentation)}
           </CardTitle>
           <ComponentDialog leaseId={lease.id} />
         </CardHeader>
@@ -227,7 +224,7 @@ export default async function LeaseDetailPage({ params }: { params: Promise<{ id
             <TableBody>
               <TableRow>
                 <TableCell className="font-medium">{t("leases.coldRent")}</TableCell>
-                <TableCell className="text-right">{money(Number(lease.rentCold), locale)}</TableCell>
+                <TableCell className="text-right">{money(Number(lease.rentCold), user.presentation)}</TableCell>
                 <TableCell className="w-12" />
               </TableRow>
               {lease.components.map((c) => (
@@ -236,7 +233,7 @@ export default async function LeaseDetailPage({ params }: { params: Promise<{ id
                     {t(`rentComponentType.${c.type}`)}
                     {c.note ? ` · ${c.note}` : ""}
                   </TableCell>
-                  <TableCell className="text-right">{money(Number(c.amount), locale)}</TableCell>
+                  <TableCell className="text-right">{money(Number(c.amount), user.presentation)}</TableCell>
                   <TableCell>
                     <div className="flex justify-end">
                       <DeleteButton action={deleteComponent} id={c.id} />
@@ -273,8 +270,8 @@ export default async function LeaseDetailPage({ params }: { params: Promise<{ id
                 {lease.adjustments.map((a) => (
                   <TableRow key={a.id}>
                     <TableCell>{t(`adjustmentType.${a.type}`)}</TableCell>
-                    <TableCell>{date(a.effectiveDate, df)}</TableCell>
-                    <TableCell className="text-right">{money(Number(a.newRentCold), locale)}</TableCell>
+                    <TableCell>{date(a.effectiveDate, user.presentation)}</TableCell>
+                    <TableCell className="text-right">{money(Number(a.newRentCold), user.presentation)}</TableCell>
                     <TableCell>
                       <Badge variant={a.applied ? "secondary" : "outline"}>
                         {a.applied ? t("adjustment.applied") : t("adjustment.planned")}

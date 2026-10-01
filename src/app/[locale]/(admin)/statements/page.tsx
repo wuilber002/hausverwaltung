@@ -1,4 +1,4 @@
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations, } from "next-intl/server";
 import { Printer } from "lucide-react";
 import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
@@ -30,7 +30,6 @@ export default async function StatementsPage({
   const sp = await searchParams;
   const user = await requireUser();
   const t = await getTranslations();
-  const locale = await getLocale();
   const tenantId = user.tenantId;
 
   const properties = await prisma.property.findMany({
@@ -94,7 +93,7 @@ export default async function StatementsPage({
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
           <CardTitle className="text-base">
-            {t("statements.costs")} · {t("statements.total")}: {money(totalUmlage, locale)}
+            {t("statements.costs")} · {t("statements.total")}: {money(totalUmlage, user.presentation)}
           </CardTitle>
           {propertyId && <CostDialog propertyId={propertyId} year={year} />}
         </CardHeader>
@@ -121,7 +120,7 @@ export default async function StatementsPage({
                     </TableCell>
                     <TableCell>{t(`allocationMethod.${c.method}`)}</TableCell>
                     <TableCell>{c.umlagefaehig ? t("common.yes") : t("common.no")}</TableCell>
-                    <TableCell className="text-right">{money(c.amount, locale)}</TableCell>
+                    <TableCell className="text-right">{money(c.amount, user.presentation)}</TableCell>
                     <TableCell>
                       <div className="flex justify-end">
                         <DeleteButton action={deleteCost} id={c.id} />
@@ -166,11 +165,11 @@ export default async function StatementsPage({
                 {lines.map((l) => (
                   <TableRow key={l.key}>
                     <TableCell className="font-medium">{l.label}</TableCell>
-                    <TableCell className="text-right">{money(l.allocated, locale)}</TableCell>
-                    <TableCell className="text-right">{money(l.prepayment, locale)}</TableCell>
+                    <TableCell className="text-right">{money(l.allocated, user.presentation)}</TableCell>
+                    <TableCell className="text-right">{money(l.prepayment, user.presentation)}</TableCell>
                     <TableCell className="text-right">
                       <Badge variant={l.balance >= 0 ? "secondary" : "destructive"}>
-                        {money(l.balance, locale)} · {l.balance >= 0 ? t("statements.credit") : t("statements.arrears")}
+                        {money(l.balance, user.presentation)} · {l.balance >= 0 ? t("statements.credit") : t("statements.arrears")}
                       </Badge>
                     </TableCell>
                   </TableRow>

@@ -1,10 +1,9 @@
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations, } from "next-intl/server";
 import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { Download } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { money, date } from "@/lib/format";
-import { getDateLocale } from "@/lib/date-locale";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,8 +22,6 @@ import { deleteLease } from "@/server/actions/leases";
 export default async function LeasesPage() {
   const user = await requireUser();
   const t = await getTranslations();
-  const locale = await getLocale();
-  const df = await getDateLocale(locale);
 
   const [leases, units, persons, customDefs] = await Promise.all([
     prisma.lease.findMany({
@@ -114,9 +111,9 @@ export default async function LeasesPage() {
                         {l.renters.map((r) => `${r.person.firstName} ${r.person.lastName}`).join(", ") ||
                           t("common.none")}
                       </TableCell>
-                      <TableCell className="text-right">{money(Number(l.rentCold), locale)}</TableCell>
-                      <TableCell className="text-right">{money(warm(l), locale)}</TableCell>
-                      <TableCell>{date(l.startDate, df)}</TableCell>
+                      <TableCell className="text-right">{money(Number(l.rentCold), user.presentation)}</TableCell>
+                      <TableCell className="text-right">{money(warm(l), user.presentation)}</TableCell>
+                      <TableCell>{date(l.startDate, user.presentation)}</TableCell>
                       <TableCell>
                         <Badge variant={st.variant}>{t(`leases.${st.key}`)}</Badge>
                       </TableCell>

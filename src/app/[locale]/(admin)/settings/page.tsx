@@ -25,6 +25,7 @@ import { SettingsTabs, type SettingsTab } from "@/components/settings-tabs";
 import { DeleteButton } from "@/components/delete-button";
 import { deleteUser } from "@/server/actions/users";
 import { deleteCustomFieldDef } from "@/server/actions/custom-fields";
+import { dateTime } from "@/lib/format";
 
 export default async function SettingsPage() {
   const user = await requireUser();
@@ -182,7 +183,7 @@ export default async function SettingsPage() {
           autoSync: tenant.imapAutoSync, intervalMin: tenant.imapSyncIntervalMin,
           attachments: tenant.imapAttachments, attachMaxMb: tenant.imapAttachMaxMb,
           lastSyncAt: tenant.lastInboundSyncAt
-            ? new Intl.DateTimeFormat("de-DE", { dateStyle: "short", timeStyle: "short", timeZone: "Europe/Berlin" }).format(tenant.lastInboundSyncAt)
+            ? dateTime(tenant.lastInboundSyncAt, user.presentation)
             : null,
         },
       }

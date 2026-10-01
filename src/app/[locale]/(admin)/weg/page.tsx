@@ -177,7 +177,7 @@ export default async function WegPage({
                     <TableCell className="text-muted-foreground">{o.unit.label}</TableCell>
                     <TableCell className="text-right">{decimal(weightOf(o), locale)}</TableCell>
                     <TableCell className="text-right">
-                      {money((hgById.get(o.id) ?? 0) / 12, locale)}
+                      {money((hgById.get(o.id) ?? 0) / 12, user.presentation)}
                     </TableCell>
                     <TableCell>
                       <div className="flex justify-end">
@@ -197,7 +197,7 @@ export default async function WegPage({
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
           <CardTitle className="text-base">
             {t("weg.plan")} {year}
-            {plan ? ` · ${t("weg.planTotal")}: ${money(planTotal, locale)}` : ""}
+            {plan ? ` · ${t("weg.planTotal")}: ${money(planTotal, user.presentation)}` : ""}
           </CardTitle>
           <PlanDialog
             propertyId={propertyId}
@@ -214,7 +214,7 @@ export default async function WegPage({
       <Card>
         <CardHeader>
           <CardTitle className="text-base">
-            {t("weg.annual")} {year} · {t("weg.actualTotal")}: {money(actualTotal, locale)}
+            {t("weg.annual")} {year} · {t("weg.actualTotal")}: {money(actualTotal, user.presentation)}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -240,11 +240,11 @@ export default async function WegPage({
                       <TableCell className="font-medium">
                         {o.person.firstName} {o.person.lastName}
                       </TableCell>
-                      <TableCell className="text-right">{money(alloc, locale)}</TableCell>
-                      <TableCell className="text-right">{money(prepay, locale)}</TableCell>
+                      <TableCell className="text-right">{money(alloc, user.presentation)}</TableCell>
+                      <TableCell className="text-right">{money(prepay, user.presentation)}</TableCell>
                       <TableCell className="text-right">
                         <Badge variant={bal >= 0 ? "secondary" : "destructive"}>
-                          {money(bal, locale)}
+                          {money(bal, user.presentation)}
                         </Badge>
                       </TableCell>
                     </TableRow>
@@ -272,7 +272,7 @@ export default async function WegPage({
                   <div className="flex items-center justify-between gap-2 border-b px-3 py-2">
                     <div className="text-sm">
                       <span className="font-medium">{r.name}</span>
-                      <span className="text-muted-foreground"> · {t("weg.balance")}: {money(balance, locale)}</span>
+                      <span className="text-muted-foreground"> · {t("weg.balance")}: {money(balance, user.presentation)}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <ReserveTxDialog reserveId={r.id} />
@@ -289,7 +289,7 @@ export default async function WegPage({
                           </span>
                           <div className="flex items-center gap-2">
                             <span className={Number(tx.amount) < 0 ? "text-destructive" : ""}>
-                              {money(Number(tx.amount), locale)}
+                              {money(Number(tx.amount), user.presentation)}
                             </span>
                             <DeleteButton action={deleteReserveTx} id={tx.id} />
                           </div>
@@ -312,12 +312,12 @@ export default async function WegPage({
             {reserveBalances.map(({ r, balance }) => (
               <div key={r.id} className="flex justify-between text-sm">
                 <span className="text-muted-foreground">{r.name}</span>
-                <span>{money(balance, locale)}</span>
+                <span>{money(balance, user.presentation)}</span>
               </div>
             ))}
             <div className="flex justify-between border-t pt-2 font-semibold">
               <span>{t("weg.assetsTotal")}</span>
-              <span>{money(assetsTotal, locale)}</span>
+              <span>{money(assetsTotal, user.presentation)}</span>
             </div>
           </CardContent>
         </Card>

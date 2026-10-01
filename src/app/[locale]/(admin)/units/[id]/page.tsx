@@ -5,7 +5,6 @@ import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
 import { money, date, decimal } from "@/lib/format";
-import { getDateLocale } from "@/lib/date-locale";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,7 +30,6 @@ export default async function UnitDetailPage({
   const user = await requireUser();
   const t = await getTranslations();
   const locale = await getLocale();
-  const df = await getDateLocale(locale);
 
   const unit = await prisma.unit.findFirst({
     where: { id, tenantId: user.tenantId },
@@ -131,8 +129,8 @@ export default async function UnitDetailPage({
                     t("common.none")}
                 </span>
                 <span className="text-muted-foreground">
-                  {money(Number(l.rentCold), locale)} · {date(l.startDate, df)}
-                  {l.endDate ? ` – ${date(l.endDate, df)}` : ""}
+                  {money(Number(l.rentCold), user.presentation)} · {date(l.startDate, user.presentation)}
+                  {l.endDate ? ` – ${date(l.endDate, user.presentation)}` : ""}
                 </span>
               </Link>
             ))

@@ -3,7 +3,6 @@ import { Plus } from "lucide-react";
 import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { money, date, decimal } from "@/lib/format";
-import { getDateLocale } from "@/lib/date-locale";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,7 +14,6 @@ export default async function PortalPage() {
   const user = await requireUser();
   const t = await getTranslations();
   const locale = await getLocale();
-  const df = await getDateLocale(locale);
 
   const dbUser = await prisma.user.findUnique({ where: { id: user.id }, select: { personId: true } });
   const personId = dbUser?.personId ?? "__none__";
@@ -122,7 +120,7 @@ export default async function PortalPage() {
                   {r.lease.unit.building.property.name} · {r.lease.unit.label}
                 </div>
                 <div className="text-muted-foreground">
-                  {t("leases.warmRent")}: {money(warm(r.lease), locale)} · {t("leases.start")}: {date(r.lease.startDate, df)}
+                  {t("leases.warmRent")}: {money(warm(r.lease), user.presentation)} · {t("leases.start")}: {date(r.lease.startDate, user.presentation)}
                 </div>
               </div>
             ))}
@@ -141,7 +139,7 @@ export default async function PortalPage() {
               <div key={tk.id} className="flex items-center justify-between gap-3 rounded-md border px-3 py-2 text-sm">
                 <div>
                   <div className="font-medium">{tk.title}</div>
-                  <div className="text-xs text-muted-foreground">{date(tk.createdAt, df)}</div>
+                  <div className="text-xs text-muted-foreground">{date(tk.createdAt, user.presentation)}</div>
                 </div>
                 <Badge variant={tk.status === "ERLEDIGT" ? "secondary" : "outline"}>
                   {t(`ticketStatus.${tk.status}`)}
@@ -165,9 +163,9 @@ export default async function PortalPage() {
               openItems.map(({ c, open }) => (
                 <div key={c.id} className="flex justify-between text-sm">
                   <span className="text-muted-foreground">
-                    {t(`chargeType.${c.type}`)} · {date(c.period, df)}
+                    {t(`chargeType.${c.type}`)} · {date(c.period, user.presentation)}
                   </span>
-                  <span className="font-medium">{money(open, locale)}</span>
+                  <span className="font-medium">{money(open, user.presentation)}</span>
                 </div>
               ))
             )}
@@ -188,10 +186,10 @@ export default async function PortalPage() {
               paymentHistory.map((p) => (
                 <div key={p.id} className="flex items-center justify-between gap-3 text-sm">
                   <span className="text-muted-foreground">
-                    {t(`chargeType.${p.type}`)} · {date(p.date, df)}
+                    {t(`chargeType.${p.type}`)} · {date(p.date, user.presentation)}
                   </span>
                   <span className="flex items-center gap-2">
-                    <span className="font-medium">{money(p.amount, locale)}</span>
+                    <span className="font-medium">{money(p.amount, user.presentation)}</span>
                     <Badge variant="secondary">{t("portal.chargeStatus.paid")}</Badge>
                   </span>
                 </div>

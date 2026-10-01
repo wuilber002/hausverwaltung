@@ -1,4 +1,4 @@
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations, } from "next-intl/server";
 import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { money } from "@/lib/format";
@@ -18,7 +18,6 @@ import { bookGrundsteuerAsCost } from "@/server/actions/niche";
 export default async function GrundsteuerPage() {
   const user = await requireUser();
   const t = await getTranslations();
-  const locale = await getLocale();
 
   const properties = await prisma.property.findMany({
     where: { tenantId: user.tenantId },
@@ -61,9 +60,9 @@ export default async function GrundsteuerPage() {
                     <TableRow key={p.id}>
                       <TableCell className="font-medium">{p.name}</TableCell>
                       <TableCell className="text-muted-foreground">{tax?.aktenzeichen ?? t("common.none")}</TableCell>
-                      <TableCell className="text-right">{mess ? money(mess, locale) : t("common.none")}</TableCell>
+                      <TableCell className="text-right">{mess ? money(mess, user.presentation) : t("common.none")}</TableCell>
                       <TableCell className="text-right">{hebe ? `${hebe} %` : t("common.none")}</TableCell>
-                      <TableCell className="text-right font-medium">{money(jahr(mess, hebe), locale)}</TableCell>
+                      <TableCell className="text-right font-medium">{money(jahr(mess, hebe), user.presentation)}</TableCell>
                       <TableCell>
                         <div className="flex justify-end gap-1">
                           {mess && hebe ? (

@@ -1,9 +1,8 @@
 import { Download, FileText } from "lucide-react";
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations, } from "next-intl/server";
 import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { date, money } from "@/lib/format";
-import { getDateLocale } from "@/lib/date-locale";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -36,8 +35,6 @@ export default async function DocumentsPage({
   const sp = await searchParams;
   const user = await requireUser();
   const t = await getTranslations();
-  const locale = await getLocale();
-  const df = await getDateLocale(locale);
   const tenantId = user.tenantId;
   const q = (sp.q ?? "").trim();
   const propId = (sp.prop ?? "").trim();
@@ -169,14 +166,14 @@ export default async function DocumentsPage({
                           <span className="mt-0.5 block text-xs text-muted-foreground">
                             {d.invoiceNo ? `Nr. ${d.invoiceNo}` : ""}
                             {d.invoiceNo && d.invoiceTotal ? " · " : ""}
-                            {d.invoiceTotal ? money(Number(d.invoiceTotal), locale) : ""}
+                            {d.invoiceTotal ? money(Number(d.invoiceTotal), user.presentation) : ""}
                           </span>
                         )}
                       </TableCell>
                       <TableCell>{t(`documentCategory.${d.category}`)}</TableCell>
                       <TableCell className="text-muted-foreground">{linked || t("common.none")}</TableCell>
                       <TableCell className="text-right text-muted-foreground">{fmtSize(d.size)}</TableCell>
-                      <TableCell>{date(d.createdAt, df)}</TableCell>
+                      <TableCell>{date(d.createdAt, user.presentation)}</TableCell>
                       <TableCell>
                         <div className="flex items-center justify-end gap-1">
                           <DocumentPreview id={d.id} name={d.name} mime={d.mime} />

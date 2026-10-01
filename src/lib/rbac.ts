@@ -2,6 +2,8 @@ import type { UserRole } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { actingTenantId } from "@/lib/acting-tenant";
+import { getTenantPresentationContext } from "@/lib/tenant-presentation-context";
+import type { PresentationContext } from "@/lib/presentation-context";
 
 /** ADMIN darf alles; sonst muss die Rolle in `allowed` sein. */
 export function roleAllows(role: UserRole, allowed: UserRole[]): boolean {
@@ -17,6 +19,7 @@ export type SessionUser = {
   name?: string | null;
   email?: string | null;
   locale: string;
+  presentation: PresentationContext;
 };
 
 /** Server-Guard: liefert den User oder leitet zum Login. */
@@ -25,6 +28,8 @@ export async function requireUser(): Promise<SessionUser> {
   if (!session?.user) redirect("/login");
   const u = session.user;
   const tenantId = await actingTenantId(u);
+  const locale = u.locale ?? "de";
+  const presentation = await getTenantPresentationContext(tenantId, locale);
   return {
     id: u.id,
     tenantId,
@@ -33,7 +38,8 @@ export async function requireUser(): Promise<SessionUser> {
     role: u.role,
     name: u.name,
     email: u.email,
-    locale: u.locale ?? "de",
+    locale,
+    presentation,
   };
 }
 

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { readableForeground } from "@/lib/color";
@@ -16,6 +16,7 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/user-menu";
 import { SearchBox } from "@/components/search-box";
+import { dateTime } from "@/lib/format";
 
 export default async function AdminLayout({
   children,
@@ -26,7 +27,6 @@ export default async function AdminLayout({
   // Portal-Rollen haben keinen Zugriff auf die Verwalter-App.
   if (["MIETER", "EIGENTUEMER", "HANDWERKER"].includes(user.role)) redirect("/portal");
 
-  const locale = await getLocale();
   const t = await getTranslations();
   const [tenant, notifs, unread] = await Promise.all([
     prisma.tenant.findUnique({ where: { id: user.tenantId }, select: { name: true, brandColor: true, logoKey: true } }),
@@ -34,14 +34,13 @@ export default async function AdminLayout({
     prisma.notification.count({ where: { userId: user.id, read: false } }),
   ]);
   const logoUrl = tenant?.logoKey ? "/api/logo" : undefined;
-  const dtf = new Intl.DateTimeFormat(locale, { dateStyle: "short", timeStyle: "short" });
   const notifItems = notifs.map((n) => ({
     id: n.id,
     title: n.title,
     body: n.body,
     link: n.link,
     read: n.read,
-    createdAt: dtf.format(n.createdAt),
+    createdAt: dateTime(n.createdAt, user.presentation),
   }));
 
   return (

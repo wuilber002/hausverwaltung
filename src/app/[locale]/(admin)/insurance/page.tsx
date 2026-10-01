@@ -1,8 +1,7 @@
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations, } from "next-intl/server";
 import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { money, date } from "@/lib/format";
-import { getDateLocale } from "@/lib/date-locale";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -21,8 +20,6 @@ import { Button } from "@/components/ui/button";
 export default async function InsurancePage() {
   const user = await requireUser();
   const t = await getTranslations();
-  const locale = await getLocale();
-  const df = await getDateLocale(locale);
   const tenantId = user.tenantId;
   const now = new Date();
 
@@ -70,10 +67,10 @@ export default async function InsurancePage() {
                     <TableCell>{t(`insuranceType.${i.type}`)}</TableCell>
                     <TableCell>{i.insurer}</TableCell>
                     <TableCell className="text-muted-foreground">{i.policyNo ?? t("common.none")}</TableCell>
-                    <TableCell className="text-right">{money(Number(i.premium), locale)}</TableCell>
+                    <TableCell className="text-right">{money(Number(i.premium), user.presentation)}</TableCell>
                     <TableCell>
                       {i.endDate ? (
-                        <span className={i.endDate < now ? "text-destructive" : ""}>{date(i.endDate, df)}</span>
+                        <span className={i.endDate < now ? "text-destructive" : ""}>{date(i.endDate, user.presentation)}</span>
                       ) : (
                         <Badge variant="outline">{t("leases.unlimited")}</Badge>
                       )}

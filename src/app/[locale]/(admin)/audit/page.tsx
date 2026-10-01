@@ -1,8 +1,8 @@
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { requireRole } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
-import { intlLocale } from "@/lib/format";
+import { dateTime } from "@/lib/format";
 import { Link } from "@/i18n/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,10 +19,6 @@ import {
 const PAGE_SIZE = 50;
 const ACTIONS = ["CREATE", "UPDATE", "DELETE"];
 
-function dateTime(d: Date, locale: string) {
-  return new Intl.DateTimeFormat(intlLocale(locale), { dateStyle: "medium", timeStyle: "short" }).format(d);
-}
-
 export default async function AuditPage({
   searchParams,
 }: {
@@ -31,7 +27,6 @@ export default async function AuditPage({
   const sp = await searchParams;
   const user = await requireRole(["VERWALTER"]);
   const t = await getTranslations();
-  const locale = await getLocale();
 
   const action = sp.action && ACTIONS.includes(sp.action) ? sp.action : "";
   const entity = (sp.entity ?? "").trim();
@@ -95,7 +90,7 @@ export default async function AuditPage({
               <TableBody>
                 {logs.map((l) => (
                   <TableRow key={l.id}>
-                    <TableCell className="whitespace-nowrap text-muted-foreground">{dateTime(l.createdAt, locale)}</TableCell>
+                    <TableCell className="whitespace-nowrap text-muted-foreground">{dateTime(l.createdAt, user.presentation)}</TableCell>
                     <TableCell>{l.userName ?? "—"}</TableCell>
                     <TableCell><Badge variant={actionVariant(l.action)}>{t(`auditAction.${l.action}`)}</Badge></TableCell>
                     <TableCell className="text-muted-foreground">{l.entity}</TableCell>

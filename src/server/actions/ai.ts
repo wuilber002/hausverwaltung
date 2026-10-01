@@ -5,6 +5,7 @@ import { requireUser } from "@/lib/rbac";
 import { isAiConfigured, askAssistant } from "@/lib/ai";
 import { computeStatement } from "@/server/statements";
 import { money } from "@/lib/format";
+import type { FormattingContext } from "@/lib/format";
 
 export type AssistantState = { answer?: string; configured?: boolean; error?: string };
 
@@ -14,7 +15,7 @@ function assistantLocale(locale: string): AssistantLocale {
   return locale === "en" || locale === "pt-BR" ? locale : "de";
 }
 
-function assistantSummaryFallback(locale: AssistantLocale, ctx: {
+function assistantSummaryFallback(locale: AssistantLocale, format: FormattingContext, ctx: {
   objekte: number;
   einheiten: number;
   vermietet: number;
@@ -29,8 +30,8 @@ function assistantSummaryFallback(locale: AssistantLocale, ctx: {
     return [
       "Assistente de IA não configurado (ANTHROPIC_API_KEY ausente). Indicadores dos imóveis administrados:",
       "• " + ctx.objekte + " imóveis, " + ctx.einheiten + " unidades (" + ctx.vermietet + " locadas, " + ctx.leerstand + " vagas)",
-      "• Aluguel mensal previsto: " + ctx.sollmieteMonatlich + " €",
-      "• Itens em aberto: " + ctx.offenePostenSumme + " € (" + ctx.ueberfaelligeForderungen + " vencidos)",
+      "• Aluguel mensal previsto: " + money(ctx.sollmieteMonatlich, format),
+      "• Itens em aberto: " + money(ctx.offenePostenSumme, format) + " (" + ctx.ueberfaelligeForderungen + " vencidos)",
       "• " + ctx.offeneTickets + " ocorrências abertas, " + ctx.faelligeWartungen + " manutenções vencidas",
     ].join("\n");
   }
@@ -38,22 +39,23 @@ function assistantSummaryFallback(locale: AssistantLocale, ctx: {
     return [
       "AI assistant is not configured (ANTHROPIC_API_KEY is missing). Portfolio metrics:",
       "• " + ctx.objekte + " properties, " + ctx.einheiten + " units (" + ctx.vermietet + " occupied, " + ctx.leerstand + " vacant)",
-      "• Expected monthly rent: " + ctx.sollmieteMonatlich + " €",
-      "• Open items: " + ctx.offenePostenSumme + " € (" + ctx.ueberfaelligeForderungen + " overdue)",
+      "• Expected monthly rent: " + money(ctx.sollmieteMonatlich, format),
+      "• Open items: " + money(ctx.offenePostenSumme, format) + " (" + ctx.ueberfaelligeForderungen + " overdue)",
       "• " + ctx.offeneTickets + " open tickets, " + ctx.faelligeWartungen + " overdue maintenance items",
     ].join("\n");
   }
   return [
     "KI-Assistent nicht konfiguriert (ANTHROPIC_API_KEY fehlt). Kennzahlen zum Bestand:",
     "• " + ctx.objekte + " Objekte, " + ctx.einheiten + " Einheiten (" + ctx.vermietet + " vermietet, " + ctx.leerstand + " leer)",
-    "• Sollmiete/Monat: " + ctx.sollmieteMonatlich + " €",
-    "• Offene Posten: " + ctx.offenePostenSumme + " € (" + ctx.ueberfaelligeForderungen + " überfällig)",
+    "• Sollmiete/Monat: " + money(ctx.sollmieteMonatlich, format),
+    "• Offene Posten: " + money(ctx.offenePostenSumme, format) + " (" + ctx.ueberfaelligeForderungen + " überfällig)",
     "• " + ctx.offeneTickets + " offene Tickets, " + ctx.faelligeWartungen + " fällige Wartungen",
   ].join("\n");
 }
 
 function statementFallback(
   locale: AssistantLocale,
+  format: FormattingContext,
   year: number,
   property: string | undefined,
   total: number,
@@ -65,19 +67,19 @@ function statementFallback(
       : locale === "pt-BR" ? "valor a pagar" : locale === "en" ? "additional payment" : "Nachzahlung";
 
     if (locale === "pt-BR") {
-      return "• " + unit.label + ": rateado " + money(unit.allocated) + ", adiantamentos " + money(unit.prepayment) + ", saldo " + money(unit.balance) + " (" + balanceStatus + ")";
+      return "• " + unit.label + ": rateado " + money(unit.allocated, format) + ", adiantamentos " + money(unit.prepayment, format) + ", saldo " + money(unit.balance, format) + " (" + balanceStatus + ")";
     }
     if (locale === "en") {
-      return "• " + unit.label + ": allocated " + money(unit.allocated) + ", prepayment " + money(unit.prepayment) + ", balance " + money(unit.balance) + " (" + balanceStatus + ")";
+      return "• " + unit.label + ": allocated " + money(unit.allocated, format) + ", prepayment " + money(unit.prepayment, format) + ", balance " + money(unit.balance, format) + " (" + balanceStatus + ")";
     }
-    return "• " + unit.label + ": umgelegt " + money(unit.allocated) + ", VZ " + money(unit.prepayment) + ", Saldo " + money(unit.balance) + " (" + balanceStatus + ")";
+    return "• " + unit.label + ": umgelegt " + money(unit.allocated, format) + ", VZ " + money(unit.prepayment, format) + ", Saldo " + money(unit.balance, format) + " (" + balanceStatus + ")";
   });
 
   if (locale === "pt-BR") {
     return [
       "Assistente de IA não configurado (ANTHROPIC_API_KEY ausente). Resumo do demonstrativo de " + year + ":",
       "• Imóvel: " + property,
-      "• Total de custos rateáveis: " + money(total),
+      "• Total de custos rateáveis: " + money(total, format),
       ...unitLines,
     ].join("\n");
   }
@@ -85,14 +87,14 @@ function statementFallback(
     return [
       "AI assistant is not configured (ANTHROPIC_API_KEY is missing). Summary of the " + year + " statement:",
       "• Property: " + property,
-      "• Total allocable costs: " + money(total),
+      "• Total allocable costs: " + money(total, format),
       ...unitLines,
     ].join("\n");
   }
   return [
     "KI-Assistent nicht konfiguriert (ANTHROPIC_API_KEY fehlt). Kurzfassung der Abrechnung " + year + ":",
     "• Objekt: " + property,
-    "• Umlagefähige Kosten gesamt: " + money(total),
+    "• Umlagefähige Kosten gesamt: " + money(total, format),
     ...unitLines,
   ].join("\n");
 }
@@ -156,7 +158,7 @@ export async function askAssistantAction(_prev: AssistantState, fd: FormData): P
   const aiCfg = { provider: tenant?.aiProvider, baseUrl: tenant?.aiBaseUrl, apiKey: tenant?.aiApiKey, model: tenant?.aiModel };
   const configured = isAiConfigured(aiCfg);
 
-  if (!configured) return { answer: assistantSummaryFallback(assistantLocale(user.locale), ctx), configured: false };
+  if (!configured) return { answer: assistantSummaryFallback(assistantLocale(user.locale), user.presentation, ctx), configured: false };
 
   try {
     const answer = await askAssistant(JSON.stringify(ctx), question, aiCfg);
@@ -187,7 +189,7 @@ export async function explainStatement(_p: AssistantState, fd: FormData): Promis
 
   if (!isAiConfigured(aiCfg)) {
     return {
-      answer: statementFallback(assistantLocale(user.locale), year, st.property?.name, st.totalUmlage, st.units),
+      answer: statementFallback(assistantLocale(user.locale), user.presentation, year, st.property?.name, st.totalUmlage, st.units),
       configured: false,
     };
   }

@@ -1,10 +1,9 @@
 import { headers } from "next/headers";
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations, } from "next-intl/server";
 import { requireUser } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { BankSync } from "@/components/bank-sync";
 import { money, date } from "@/lib/format";
-import { getDateLocale } from "@/lib/date-locale";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -44,8 +43,6 @@ export default async function FinancesPage({
   const yearFilter = sp.year ?? "";
   const user = await requireUser();
   const t = await getTranslations();
-  const locale = await getLocale();
-  const df = await getDateLocale(locale);
   const tenantId = user.tenantId;
 
   const [charges, accounts, mandates, leases, persons, bankConnector, bankLinks, payments, allDocuments] = await Promise.all([
@@ -146,7 +143,7 @@ export default async function FinancesPage({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{money(totalOpen, locale)}</div>
+            <div className="text-3xl font-bold">{money(totalOpen, user.presentation)}</div>
           </CardContent>
         </Card>
         <Card>
@@ -240,7 +237,7 @@ export default async function FinancesPage({
               <TableBody>
                 {visibleRows.map(({ c, open, status, dunLevel }) => (
                   <TableRow key={c.id}>
-                    <TableCell>{date(c.period, df)}</TableCell>
+                    <TableCell>{date(c.period, user.presentation)}</TableCell>
                     <TableCell>{t(`chargeType.${c.type}`)}</TableCell>
                     <TableCell className="text-muted-foreground">
                       {c.lease ? (
@@ -261,9 +258,9 @@ export default async function FinancesPage({
                         t("common.none")
                       )}
                     </TableCell>
-                    <TableCell className="text-right">{money(Number(c.amount), locale)}</TableCell>
-                    <TableCell className="text-right">{money(Math.max(0, open), locale)}</TableCell>
-                    <TableCell>{date(c.dueDate, df)}</TableCell>
+                    <TableCell className="text-right">{money(Number(c.amount), user.presentation)}</TableCell>
+                    <TableCell className="text-right">{money(Math.max(0, open), user.presentation)}</TableCell>
+                    <TableCell>{date(c.dueDate, user.presentation)}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
                         <Badge variant={statusVariant(status)}>{t(`finances.status${status}`)}</Badge>
@@ -310,8 +307,8 @@ export default async function FinancesPage({
         <CardHeader>
           <CardTitle className="text-base">{t("finances.transactions")}</CardTitle>
           <p className="text-xs text-muted-foreground">
-            {t("finances.transIn")}: {money(txnSummary.inTotal, locale)} · {t("finances.transOut")}:{" "}
-            {money(txnSummary.outTotal, locale)} · {t("finances.transNet")}: {money(txnSummary.net, locale)}
+            {t("finances.transIn")}: {money(txnSummary.inTotal, user.presentation)} · {t("finances.transOut")}:{" "}
+            {money(txnSummary.outTotal, user.presentation)} · {t("finances.transNet")}: {money(txnSummary.net, user.presentation)}
           </p>
         </CardHeader>
         <CardContent className="p-0">
@@ -332,7 +329,7 @@ export default async function FinancesPage({
               <TableBody>
                 {payments.map((p) => (
                   <TableRow key={p.id}>
-                    <TableCell>{date(p.date, df)}</TableCell>
+                    <TableCell>{date(p.date, user.presentation)}</TableCell>
                     <TableCell className="text-muted-foreground">{p.account?.name ?? t("common.none")}</TableCell>
                     <TableCell
                       className="max-w-[28rem] whitespace-normal break-words text-muted-foreground"
@@ -343,7 +340,7 @@ export default async function FinancesPage({
                     </TableCell>
                     <TableCell className={`text-right font-medium ${p.direction === "EINGANG" ? "text-emerald-600 dark:text-emerald-400" : "text-destructive"}`}>
                       {p.direction === "EINGANG" ? "+" : "−"}
-                      {money(Number(p.amount), locale)}
+                      {money(Number(p.amount), user.presentation)}
                     </TableCell>
                     <TableCell className="text-muted-foreground">
                       {p.documents.length > 0 ? (

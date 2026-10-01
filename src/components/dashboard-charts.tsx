@@ -1,4 +1,5 @@
 import { money } from "@/lib/format";
+import type { FormattingContext } from "@/lib/format";
 
 // Kompakte, abhängigkeitsfreie SVG-Charts fürs Dashboard.
 // Farbpaar (Soll/Zahlung) ist CVD-geprüft; Werte zusätzlich als Label/Tooltip.
@@ -7,11 +8,11 @@ const ZAHLUNG = "#E0781E";
 
 export function MonthlyBars({
   data,
-  locale,
+  format,
   labels,
 }: {
   data: { label: string; soll: number; zahlung: number }[];
-  locale: string;
+  format: FormattingContext;
   labels: { soll: string; zahlung: string };
 }) {
   const max = Math.max(1, ...data.flatMap((d) => [d.soll, d.zahlung]));
@@ -39,10 +40,10 @@ export function MonthlyBars({
           return (
             <g key={i}>
               <rect x={cx - barW - 1} y={H - padB - hs} width={barW} height={hs} rx={3} fill={SOLL}>
-                <title>{`${d.label} · ${labels.soll}: ${money(d.soll, locale)}`}</title>
+                <title>{`${d.label} · ${labels.soll}: ${money(d.soll, format)}`}</title>
               </rect>
               <rect x={cx + 1} y={H - padB - hz} width={barW} height={hz} rx={3} fill={ZAHLUNG}>
-                <title>{`${d.label} · ${labels.zahlung}: ${money(d.zahlung, locale)}`}</title>
+                <title>{`${d.label} · ${labels.zahlung}: ${money(d.zahlung, format)}`}</title>
               </rect>
               <text x={cx} y={H - padB + 15} textAnchor="middle" className="fill-muted-foreground" fontSize={11}>
                 {d.label}
