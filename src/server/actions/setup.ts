@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { needsSetup } from "@/lib/setup";
 import { ensureDefaultAccounts } from "@/lib/accounts";
+import { normalizeAddress } from "@/lib/address";
 import { setupSchema, type ActionState } from "@/lib/schemas";
 
 // Ersteinrichtung: legt ersten Mandanten + Administrator an. Nur bei leerem System.
@@ -40,14 +41,15 @@ export async function setupSystem(_p: ActionState, fd: FormData): Promise<Action
 
   // Optionales erstes Objekt
   if (propertyName) {
-    await prisma.property.create({
-      data: {
-        tenantId: tenant.id,
-        name: propertyName,
-        street: propertyStreet || "-",
-        zip: propertyZip || "-",
-        city: propertyCity || "-",
-      },
+    const street = propertyStreet || "-";
+    const zip = propertyZip || "-";
+    const city = propertyCity || "-";
+    const address = normalizeAddress({ line1: street, locality: city, postalCode: zip, countryCode: "DE" });
+    await prisma.$transaction(async (tx) => {
+      const structuredAddress = await tx.address.create({ data: { ...address, tenantId: tenant.id } });
+      await tx.property.create({
+        data: { tenantId: tenant.id, name: propertyName, street, zip, city, addressId: structuredAddress.id },
+      });
     });
   }
 

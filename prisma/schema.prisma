@@ -119,6 +119,8 @@ model Tenant {
   id         String     @id @default(cuid())
   name       String
   address    String? // Anschrift der Verwaltung (z. B. Wohnungsgeberbestätigung, #41)
+  addressId  String?    @unique
+  structuredAddress Address? @relation("TenantStructuredAddress", fields: [addressId], references: [id], onDelete: SetNull)
   marketProfile        MarketProfile @default(DE)
   marketProfileVersion Int           @default(1)
   timeZone             String        @default("Europe/Berlin")
@@ -127,6 +129,7 @@ model Tenant {
   users      User[]
   properties Property[]
   persons    Person[]
+  addresses  Address[]  @relation("TenantAddresses")
 
   // KI-Konfiguration (überschreibt ENV, wenn gesetzt)
   aiProvider String? // "anthropic" | "openai" (OpenAI-kompatibel)
@@ -234,6 +237,8 @@ model Property {
   street     String
   zip        String
   city       String
+  addressId  String?       @unique
+  structuredAddress Address? @relation("PropertyStructuredAddress", fields: [addressId], references: [id], onDelete: SetNull)
   type          PropertyType   @default(WOHNEN)
   management    ManagementType @default(MIET)
   meaTotal      Float            @default(1000) // Soll-Summe Miteigentumsanteile (Tausendstel) für WEG
@@ -341,6 +346,8 @@ model Person {
   lastName  String
   email     String?
   phone     String?
+  addressId String?       @unique
+  structuredAddress Address? @relation("PersonStructuredAddress", fields: [addressId], references: [id], onDelete: SetNull)
   type      PersonType @default(SONSTIGE) // Kontaktgruppe (Adressbuch)
   note      String? // z.B. Mietgesuch bei Interessenten
   owners    Owner[]
@@ -350,10 +357,77 @@ model Person {
   documents Document[]
   areaAllocations AreaAllocation[]
   inboundEmails InboundEmail[]
+  identifiers PersonIdentifier[]
   custom    Json          @default("{}")
   createdAt DateTime @default(now())
 
   @@index([tenantId])
+}
+
+// Endereço internacional estruturado. Os campos legados de Tenant e Property
+// permanecem durante a migração gradual dos formulários, APIs e documentos.
+model Address {
+  id                   String   @id @default(cuid())
+  tenantId             String
+  tenant               Tenant   @relation("TenantAddresses", fields: [tenantId], references: [id], onDelete: Cascade)
+  line1                String
+  line2                String?
+  district             String?
+  locality             String?
+  administrativeArea   String?
+  postalCode           String?
+  postalCodeNormalized String?
+  countryCode          String   @db.Char(2)
+  tenantAddress        Tenant?   @relation("TenantStructuredAddress")
+  propertyAddress      Property? @relation("PropertyStructuredAddress")
+  personAddress        Person?   @relation("PersonStructuredAddress")
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@index([tenantId])
+  @@index([tenantId, countryCode])
+  @@index([tenantId, postalCodeNormalized])
+}
+
+enum PersonIdentifierType {
+  CPF
+  CNPJ
+  CIN
+  RG
+  IE
+  CAEPF
+  FOREIGN
+}
+
+enum IdentifierValidationStatus {
+  UNVERIFIED
+  VALID
+  INVALID
+}
+
+// Documento de identificação de uma pessoa. O valor normalizado permite
+// validação e unicidade; a UI deve exibir somente a versão mascarada.
+model PersonIdentifier {
+  id                 String                     @id @default(cuid())
+  tenantId           String
+  personId           String
+  person             Person                     @relation(fields: [personId], references: [id], onDelete: Cascade)
+  type               PersonIdentifierType
+  countryCode        String                     @db.Char(2)
+  valueNormalized    String
+  valueDisplay       String
+  issuer             String?
+  issuedIn           String?
+  issuedAt           DateTime?
+  validationStatus   IdentifierValidationStatus @default(UNVERIFIED)
+  basisIdentifierId  String?
+  basisIdentifier    PersonIdentifier?          @relation("IdentifierBasis", fields: [basisIdentifierId], references: [id], onDelete: SetNull)
+  derivedIdentifiers PersonIdentifier[]         @relation("IdentifierBasis")
+  createdAt          DateTime                   @default(now())
+  updatedAt          DateTime                   @updatedAt
+
+  @@unique([tenantId, type, countryCode, valueNormalized])
+  @@index([tenantId, personId])
 }
 
 // Eingehende E-Mail (IMAP-Import) für den Kommunikationsverlauf (#39).

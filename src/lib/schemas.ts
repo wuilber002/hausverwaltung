@@ -89,6 +89,18 @@ export const personSchema = z.object({
   note: optionalStr,
 });
 
+export const personIdentifierSchema = z.object({
+  personId: z.string().min(1),
+  id: optionalStr,
+  type: z.enum(["CPF", "CNPJ", "CIN", "RG", "IE", "CAEPF", "FOREIGN"]),
+  countryCode: z.string().trim().toUpperCase().regex(/^[A-Z]{2}$/, "Código de país inválido"),
+  value: z.string().trim().min(1, "Identificador obrigatório"),
+  issuer: optionalStr,
+  issuedIn: optionalStr,
+  issuedAt: optionalDate,
+  basisIdentifierId: optionalStr,
+});
+
 export const meterSchema = z.object({
   unitId: z.string().min(1),
   type: z.enum(["STROM", "GAS", "WASSER_KALT", "WASSER_WARM", "WAERME"]),

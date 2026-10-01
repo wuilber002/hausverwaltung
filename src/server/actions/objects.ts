@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { requireWriter } from "@/lib/rbac";
 import { audit } from "@/lib/audit";
 import { pickCustom } from "@/lib/custom";
+import { normalizeAddress } from "@/lib/address";
 import {
   propertySchema,
   buildingSchema,
@@ -24,14 +25,27 @@ function done(): ActionState {
   return { ok: true };
 }
 
+function structuredPropertyAddress(data: { street: string; city: string; zip: string }, countryCode: string) {
+  try {
+    return normalizeAddress({ line1: data.street, locality: data.city, postalCode: data.zip, countryCode });
+  } catch (error) {
+    return error instanceof Error ? error.message : "Endereço inválido";
+  }
+}
+
 // --- Property ---
 export async function createProperty(_p: ActionState, fd: FormData): Promise<ActionState> {
   const user = await requireWriter();
   const entries = Object.fromEntries(fd);
   const r = propertySchema.safeParse(entries);
   if (!r.success) return fail(r.error.issues[0]?.message);
-  const created = await prisma.property.create({
-    data: { ...r.data, custom: pickCustom(entries), tenantId: user.tenantId },
+  const address = structuredPropertyAddress(r.data, user.presentation.marketProfile);
+  if (typeof address === "string") return fail(address);
+  const created = await prisma.$transaction(async (tx) => {
+    const structuredAddress = await tx.address.create({ data: { ...address, tenantId: user.tenantId } });
+    return tx.property.create({
+      data: { ...r.data, custom: pickCustom(entries), tenantId: user.tenantId, addressId: structuredAddress.id },
+    });
   });
   await audit(user, "CREATE", "Property", created.id, r.data.name);
   return done();
@@ -43,11 +57,23 @@ export async function updateProperty(_p: ActionState, fd: FormData): Promise<Act
   const entries = Object.fromEntries(fd);
   const r = propertySchema.safeParse(entries);
   if (!r.success) return fail(r.error.issues[0]?.message);
-  await prisma.property.updateMany({
-    where: { id, tenantId: user.tenantId },
-    data: { ...r.data, custom: pickCustom(entries) },
+  const address = structuredPropertyAddress(r.data, user.presentation.marketProfile);
+  if (typeof address === "string") return fail(address);
+  const updated = await prisma.$transaction(async (tx) => {
+    const property = await tx.property.findFirst({
+      where: { id, tenantId: user.tenantId },
+      select: { id: true, addressId: true },
+    });
+    if (!property) return false;
+    const addressId = property.addressId ?? (await tx.address.create({ data: { ...address, tenantId: user.tenantId } })).id;
+    await tx.address.updateMany({ where: { id: addressId, tenantId: user.tenantId }, data: address });
+    await tx.property.update({
+      where: { id: property.id },
+      data: { ...r.data, custom: pickCustom(entries), addressId },
+    });
+    return true;
   });
-  await audit(user, "UPDATE", "Property", id, r.data.name);
+  if (updated) await audit(user, "UPDATE", "Property", id, r.data.name);
   return done();
 }
 
