@@ -113,7 +113,10 @@ function CountryCombobox({
             aria-label={t("countryCode")}
             disabled={disabled}
             onMouseDown={(event) => event.preventDefault()}
-            onClick={() => setOpen((current) => !current)}
+            onClick={() => {
+              setQuery("");
+              setOpen(true);
+            }}
           >
             <ChevronsUpDown className="size-4" />
           </Button>
