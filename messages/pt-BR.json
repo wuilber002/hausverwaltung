@@ -146,7 +146,14 @@
     "saved": "Salvo",
     "tenantAddress": "Endereço da administração",
     "tenantAddressPlaceholder": "ex.: Rua Exemplo, 1, 12345 Cidade Exemplo",
-    "tenantAddressHint": "Usado como endereço da administradora em documentos e comunicações."
+    "tenantAddressHint": "Usado como endereço da administradora em documentos e comunicações.",
+    "marketProfile": "Perfil de mercado",
+    "marketProfileHint": "Define os padrões operacionais da organização. Não altera o idioma individual dos usuários.",
+    "marketProfileDE": "Alemanha (DE)",
+    "marketProfileBR": "Brasil (BR)",
+    "marketProfileDefaults": "Padrões atuais: fuso {timeZone} · moeda {currencyCode}.",
+    "marketProfileLocked": "O perfil está bloqueado porque a organização já possui dados operacionais.",
+    "marketProfileCanChange": "Ainda não há dados operacionais; a alteração aplica os padrões do perfil selecionado."
   },
   "account": {
     "changePassword": "Alterar senha",
@@ -229,7 +236,11 @@
     "doneTitle": "Tudo pronto!",
     "back": "Voltar",
     "next": "Avançar",
-    "skip": "Pular"
+    "skip": "Pular",
+    "marketProfile": "Perfil de mercado",
+    "marketProfileHint": "Define fuso horário e moeda da organização. O idioma continua sendo uma escolha individual.",
+    "marketProfileDE": "Alemanha (DE)",
+    "marketProfileBR": "Brasil (BR)"
   },
   "branding": {
     "title": "Aparência",
@@ -599,7 +610,10 @@
     "home": "Própria",
     "active": "Ativa",
     "switch": "Alternar",
-    "actingHint": "Você está trabalhando em outra organização. Clique para gerenciá-las."
+    "actingHint": "Você está trabalhando em outra organização. Clique para gerenciá-las.",
+    "marketProfile": "Perfil de mercado",
+    "marketProfileDE": "Alemanha (DE)",
+    "marketProfileBR": "Brasil (BR)"
   },
   "bank": {
     "title": "Sincronização bancária (open banking)",

@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { needsSetup } from "@/lib/setup";
 import { ensureDefaultAccounts } from "@/lib/accounts";
 import { normalizeAddress } from "@/lib/address";
+import { marketProfile } from "@/lib/market-profile";
 import { setupSchema, type ActionState } from "@/lib/schemas";
 
 // Ersteinrichtung: legt ersten Mandanten + Administrator an. Nur bei leerem System.
@@ -14,7 +15,8 @@ export async function setupSystem(_p: ActionState, fd: FormData): Promise<Action
 
   const r = setupSchema.safeParse(Object.fromEntries(fd));
   if (!r.success) return { error: r.error.issues[0]?.message ?? "Ungültige Eingabe" };
-  const { tenantName, name, email, password, locale, brandColor, propertyName, propertyStreet, propertyZip, propertyCity } = r.data;
+  const { tenantName, name, email, password, locale, marketProfile: marketProfileId, brandColor, propertyName, propertyStreet, propertyZip, propertyCity } = r.data;
+  const profile = marketProfile(marketProfileId);
 
   const existing = await prisma.user.findUnique({ where: { email }, select: { id: true } });
   if (existing) return { error: "E-Mail bereits vergeben." };
@@ -23,6 +25,10 @@ export async function setupSystem(_p: ActionState, fd: FormData): Promise<Action
     data: {
       name: tenantName,
       brandColor: brandColor || null,
+      marketProfile: profile.id,
+      marketProfileVersion: profile.version,
+      timeZone: profile.defaultTimeZone,
+      currencyCode: profile.defaultCurrency,
       users: {
         create: {
           email,
@@ -44,7 +50,7 @@ export async function setupSystem(_p: ActionState, fd: FormData): Promise<Action
     const street = propertyStreet || "-";
     const zip = propertyZip || "-";
     const city = propertyCity || "-";
-    const address = normalizeAddress({ line1: street, locality: city, postalCode: zip, countryCode: "DE" });
+    const address = normalizeAddress({ line1: street, locality: city, postalCode: zip, countryCode: profile.countryCode });
     await prisma.$transaction(async (tx) => {
       const structuredAddress = await tx.address.create({ data: { ...address, tenantId: tenant.id } });
       await tx.property.create({

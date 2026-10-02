@@ -8,6 +8,7 @@ import { pingAi } from "@/lib/ai";
 import { verifyMailer } from "@/lib/adapters/mailer";
 import { verifyImap } from "@/lib/adapters/imap";
 import { clampSyncInterval, clampAttachMaxMb } from "@/lib/inbound";
+import { isMarketProfileId, marketProfile } from "@/lib/market-profile";
 import type { ActionState } from "@/lib/schemas";
 
 const str = (v: FormDataEntryValue | null) => {
@@ -27,6 +28,56 @@ export async function updateTenantName(_p: ActionState, fd: FormData): Promise<A
   revalidatePath("/", "layout");
   return { ok: true };
 }
+
+// --- Marktprofil ---
+
+const operationalDataWhere = (tenantId: string) => ({ tenantId });
+
+async function hasOperationalData(tenantId: string): Promise<boolean> {
+  const counts = await prisma.$transaction([
+    prisma.property.count({ where: operationalDataWhere(tenantId) }),
+    prisma.person.count({ where: operationalDataWhere(tenantId) }),
+    prisma.unit.count({ where: operationalDataWhere(tenantId) }),
+    prisma.lease.count({ where: operationalDataWhere(tenantId) }),
+    prisma.charge.count({ where: operationalDataWhere(tenantId) }),
+    prisma.payment.count({ where: operationalDataWhere(tenantId) }),
+    prisma.document.count({ where: operationalDataWhere(tenantId) }),
+    prisma.personIdentifier.count({ where: operationalDataWhere(tenantId) }),
+  ]);
+  return counts.some((count) => count > 0);
+}
+
+export async function updateMarketProfile(_p: ActionState, fd: FormData): Promise<ActionState> {
+  const user = await requireRole(["ADMIN"]);
+  const requested = String(fd.get("marketProfile") ?? "");
+  if (!isMarketProfileId(requested)) return { error: "Ungültiges Marktprofil" };
+
+  const current = await prisma.tenant.findUnique({
+    where: { id: user.tenantId },
+    select: { marketProfile: true },
+  });
+  if (!current) return { error: "Mandant nicht gefunden" };
+  if (current.marketProfile === requested) return { ok: true };
+  if (await hasOperationalData(user.tenantId)) {
+    return { error: "Das Marktprofil ist nach dem Anlegen operativer Daten gesperrt." };
+  }
+
+  const profile = marketProfile(requested);
+  await prisma.tenant.update({
+    where: { id: user.tenantId },
+    data: {
+      marketProfile: profile.id,
+      marketProfileVersion: profile.version,
+      timeZone: profile.defaultTimeZone,
+      currencyCode: profile.defaultCurrency,
+    },
+  });
+  await audit(user, "UPDATE", "Tenant", user.tenantId, `Marktprofil: ${profile.id}`);
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
+export { hasOperationalData };
 
 // --- Abrechnungs-Standards ---
 

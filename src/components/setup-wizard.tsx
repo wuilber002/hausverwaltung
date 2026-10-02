@@ -36,6 +36,7 @@ export function SetupWizard() {
     email: "",
     password: "",
     locale: "de",
+    marketProfile: "DE",
     brandColor: "#4f46e5",
     propertyName: "",
     propertyStreet: "",
@@ -92,6 +93,14 @@ export function SetupWizard() {
           <div className="space-y-2">
             <Label htmlFor="tenantName">{t("setup.tenantName")}</Label>
             <Input id="tenantName" name="tenantName" value={f.tenantName} onChange={set("tenantName")} placeholder={t("setup.tenantNamePlaceholder")} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="marketProfile">{t("setup.marketProfile")}</Label>
+            <select id="marketProfile" name="marketProfile" value={f.marketProfile} onChange={set("marketProfile")} className={selectCls}>
+              <option value="DE">{t("setup.marketProfileDE")}</option>
+              <option value="BR">{t("setup.marketProfileBR")}</option>
+            </select>
+            <p className="text-xs text-muted-foreground">{t("setup.marketProfileHint")}</p>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">

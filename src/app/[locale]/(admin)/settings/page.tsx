@@ -20,23 +20,26 @@ import { ApiTokensManager } from "@/components/api-tokens-manager";
 import { IntegrationInfo } from "@/components/integration-info";
 import { TenantNameForm } from "@/components/tenant-name-form";
 import { DateFormatConfig } from "@/components/date-format-config";
+import { MarketProfileConfig } from "@/components/market-profile-config";
 import { StatementDefaults } from "@/components/statement-defaults";
 import { SettingsTabs, type SettingsTab } from "@/components/settings-tabs";
 import { DeleteButton } from "@/components/delete-button";
 import { deleteUser } from "@/server/actions/users";
 import { deleteCustomFieldDef } from "@/server/actions/custom-fields";
 import { dateTime } from "@/lib/format";
+import { hasOperationalData } from "@/server/actions/config";
 
 export default async function SettingsPage() {
   const user = await requireUser();
   const t = await getTranslations();
 
   const isAdmin = user.role === "ADMIN";
-  const [tenant, users, persons, customDefs, tokens] = await Promise.all([
+  const [tenant, users, persons, customDefs, profileLocked, tokens] = await Promise.all([
     prisma.tenant.findUnique({ where: { id: user.tenantId } }),
     prisma.user.findMany({ where: { tenantId: user.tenantId }, orderBy: { createdAt: "asc" } }),
     prisma.person.findMany({ where: { tenantId: user.tenantId }, orderBy: { lastName: "asc" } }),
     prisma.customFieldDef.findMany({ where: { tenantId: user.tenantId }, orderBy: { createdAt: "asc" } }),
+    hasOperationalData(user.tenantId),
     prisma.apiToken.findMany({
       where: { tenantId: user.tenantId, ...(isAdmin ? {} : { userId: user.id }) },
       include: { user: { select: { name: true } } },
@@ -67,6 +70,7 @@ export default async function SettingsPage() {
   const generalContent = (
     <>
       <TenantNameForm name={tenant?.name ?? ""} address={tenant?.address ?? ""} editable={isAdmin} />
+      {isAdmin && tenant && <MarketProfileConfig marketProfile={tenant.marketProfile} timeZone={tenant.timeZone} currencyCode={tenant.currencyCode} locked={profileLocked} />}
       {isAdmin && <DateFormatConfig dateFormat={tenant?.dateFormat ?? null} />}
       {isAdmin && tenant && <BrandingConfig brandColor={tenant.brandColor} hasLogo={!!tenant.logoKey} />}
     </>

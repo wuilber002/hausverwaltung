@@ -7,28 +7,36 @@ import { prisma } from "@/lib/prisma";
 import { requireSuperAdmin } from "@/lib/rbac";
 import { ensureDefaultAccounts } from "@/lib/accounts";
 import { ACTING_TENANT_COOKIE } from "@/lib/acting-tenant";
+import { isMarketProfileId, marketProfile } from "@/lib/market-profile";
 import type { ActionState } from "@/lib/schemas";
 
 // Neuen Mandanten + ersten Admin anlegen (nur Instanz-Admin).
 export async function createTenant(_p: ActionState, fd: FormData): Promise<ActionState> {
-  const user = await requireSuperAdmin();
+  await requireSuperAdmin();
   const name = String(fd.get("name") ?? "").trim();
   const adminName = String(fd.get("adminName") ?? "").trim() || "Admin";
   const email = String(fd.get("adminEmail") ?? "").trim().toLowerCase();
   const password = String(fd.get("adminPassword") ?? "");
+  const marketProfileId = String(fd.get("marketProfile") ?? "DE");
   if (!name) return { error: "Mandantenname fehlt" };
   if (!/.+@.+\..+/.test(email)) return { error: "Ungültige E-Mail" };
   if (password.length < 6) return { error: "Passwort mind. 6 Zeichen" };
+  if (!isMarketProfileId(marketProfileId)) return { error: "Ungültiges Marktprofil" };
+  const profile = marketProfile(marketProfileId);
   if (await prisma.user.findUnique({ where: { email }, select: { id: true } }))
     return { error: "E-Mail bereits vergeben" };
 
   const tenant = await prisma.tenant.create({
     data: {
       name,
-      users: { create: { name: adminName, email, passwordHash: await bcrypt.hash(password, 10), role: "ADMIN", locale: user.locale } },
+      marketProfile: profile.id,
+      marketProfileVersion: profile.version,
+      timeZone: profile.defaultTimeZone,
+      currencyCode: profile.defaultCurrency,
+      users: { create: { name: adminName, email, passwordHash: await bcrypt.hash(password, 10), role: "ADMIN", locale: profile.defaultLocale } },
     },
   });
-  await ensureDefaultAccounts(prisma, tenant.id, user.locale);
+  await ensureDefaultAccounts(prisma, tenant.id, profile.defaultLocale);
   revalidatePath("/", "layout");
   return { ok: true };
 }

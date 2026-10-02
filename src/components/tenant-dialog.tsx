@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CrudDialog } from "@/components/crud-dialog";
-import { TextField } from "@/components/form-fields";
+import { SelectField, TextField } from "@/components/form-fields";
 import { createTenant } from "@/server/actions/tenants";
 
 export async function TenantDialog() {
@@ -23,6 +23,10 @@ export async function TenantDialog() {
       <TextField name="adminName" label={t("tenants.adminName")} required={false} />
       <TextField name="adminEmail" label={t("tenants.adminEmail")} type="email" />
       <TextField name="adminPassword" label={t("tenants.adminPassword")} type="password" />
+      <SelectField name="marketProfile" label={t("tenants.marketProfile")} defaultValue="DE" options={[
+        { value: "DE", label: t("tenants.marketProfileDE") },
+        { value: "BR", label: t("tenants.marketProfileBR") },
+      ]} />
     </CrudDialog>
   );
 }

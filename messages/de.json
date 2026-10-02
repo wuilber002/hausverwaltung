@@ -146,7 +146,14 @@
     "saved": "Gespeichert",
     "tenantAddress": "Anschrift der Verwaltung",
     "tenantAddressPlaceholder": "z. B. Musterstraße 1, 12345 Musterstadt",
-    "tenantAddressHint": "Die Anschrift wird u. a. als Wohnungsgeber-Anschrift in der Wohnungsgeberbestätigung vorbelegt."
+    "tenantAddressHint": "Die Anschrift wird u. a. als Wohnungsgeber-Anschrift in der Wohnungsgeberbestätigung vorbelegt.",
+    "marketProfile": "Marktprofil",
+    "marketProfileHint": "Legt die operativen Standards des Mandanten fest. Die individuelle Sprache der Benutzer bleibt unverändert.",
+    "marketProfileDE": "Deutschland (DE)",
+    "marketProfileBR": "Brasilien (BR)",
+    "marketProfileDefaults": "Aktuelle Standards: Zeitzone {timeZone} · Währung {currencyCode}.",
+    "marketProfileLocked": "Das Profil ist gesperrt, weil der Mandant bereits operative Daten enthält.",
+    "marketProfileCanChange": "Es sind noch keine operativen Daten vorhanden; die Änderung übernimmt die Standards des ausgewählten Profils."
   },
   "account": {
     "changePassword": "Passwort ändern",
@@ -229,7 +236,11 @@
     "doneTitle": "Alles bereit!",
     "back": "Zurück",
     "next": "Weiter",
-    "skip": "Überspringen"
+    "skip": "Überspringen",
+    "marketProfile": "Marktprofil",
+    "marketProfileHint": "Legt Zeitzone und Währung des Mandanten fest. Die Sprache bleibt eine individuelle Wahl.",
+    "marketProfileDE": "Deutschland (DE)",
+    "marketProfileBR": "Brasilien (BR)"
   },
   "branding": {
     "title": "Erscheinungsbild",
@@ -599,7 +610,10 @@
     "home": "Eigener",
     "active": "Aktiv",
     "switch": "Wechseln",
-    "actingHint": "Du arbeitest gerade in einem anderen Mandanten. Klick für Mandantenverwaltung."
+    "actingHint": "Du arbeitest gerade in einem anderen Mandanten. Klick für Mandantenverwaltung.",
+    "marketProfile": "Marktprofil",
+    "marketProfileDE": "Deutschland (DE)",
+    "marketProfileBR": "Brasilien (BR)"
   },
   "bank": {
     "title": "Bank-Sync (Open Banking)",

@@ -294,6 +294,7 @@ export const setupSchema = z.object({
   email: z.string().trim().email(),
   password: z.string().min(6),
   locale: z.enum(["de", "en", "pt-BR"]),
+  marketProfile: z.enum(["DE", "BR"]).default("DE"),
   brandColor: optionalStr,
   // optionales erstes Objekt
   propertyName: optionalStr,
