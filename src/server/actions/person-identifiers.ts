@@ -1,13 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { requireWriter } from "@/lib/rbac";
 import { normalizeIdentifier } from "@/lib/identifiers";
 import { personIdentifierSchema, type ActionState } from "@/lib/schemas";
-
-const invalid = (error = "Identificador inválido"): ActionState => ({ error });
 
 /**
  * Persiste um identificador sem enviar seu valor ao log ou à auditoria.
@@ -16,14 +15,16 @@ const invalid = (error = "Identificador inválido"): ActionState => ({ error });
  */
 export async function savePersonIdentifier(_p: ActionState, fd: FormData): Promise<ActionState> {
   const user = await requireWriter();
+  const t = await getTranslations({ locale: user.locale, namespace: "personIdentifiers" });
+  const invalid = (error = t("errorInvalid")): ActionState => ({ error });
   const parsed = personIdentifierSchema.safeParse(Object.fromEntries(fd));
-  if (!parsed.success) return invalid(parsed.error.issues[0]?.message);
+  if (!parsed.success) return invalid();
 
   const person = await prisma.person.findFirst({
     where: { id: parsed.data.personId, tenantId: user.tenantId },
     select: { id: true },
   });
-  if (!person) return invalid("Pessoa não encontrada");
+  if (!person) return invalid(t("errorPersonNotFound"));
 
   let normalized;
   try {
@@ -38,7 +39,7 @@ export async function savePersonIdentifier(_p: ActionState, fd: FormData): Promi
   if (normalized.validationStatus === "INVALID") return invalid();
 
   if (parsed.data.type === "CIN") {
-    if (!parsed.data.basisIdentifierId) return invalid("A CIN deve estar vinculada a um CPF");
+    if (!parsed.data.basisIdentifierId) return invalid(t("errorCinNeedsCpf"));
     const cpf = await prisma.personIdentifier.findFirst({
       where: {
         id: parsed.data.basisIdentifierId,
@@ -49,7 +50,7 @@ export async function savePersonIdentifier(_p: ActionState, fd: FormData): Promi
       },
       select: { id: true, valueNormalized: true },
     });
-    if (!cpf || cpf.valueNormalized !== normalized.valueNormalized) return invalid("A CIN deve usar o CPF validado da pessoa");
+    if (!cpf || cpf.valueNormalized !== normalized.valueNormalized) return invalid(t("errorCinCpfMismatch"));
   }
 
   const data = {
@@ -72,13 +73,13 @@ export async function savePersonIdentifier(_p: ActionState, fd: FormData): Promi
         where: { id: parsed.data.id, tenantId: user.tenantId, personId: person.id },
         data,
       });
-      if (result.count === 0) return invalid("Identificador não encontrado");
+      if (result.count === 0) return invalid(t("errorNotFound"));
     } else {
       await prisma.personIdentifier.create({ data });
     }
   } catch {
     // Valor propositalmente não aparece na resposta, em logs ou na auditoria.
-    return invalid("Documento já está associado a uma pessoa");
+    return invalid(t("errorDuplicate"));
   }
 
   await audit(user, "UPDATE", "PersonIdentifier", parsed.data.id ?? person.id, `Tipo: ${normalized.type}`);

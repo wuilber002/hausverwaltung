@@ -1,8 +1,9 @@
-import { ArrowLeft, Mail, Phone } from "lucide-react";
+import { ArrowLeft, Mail, Paperclip, Phone } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { requireUser } from "@/lib/rbac";
+import { IDENTIFIER_READ_ROLES, WRITE_ROLES, requireUser, roleAllows } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
+import { listMaskedPersonIdentifiers } from "@/lib/api-data";
 import { Link } from "@/i18n/navigation";
 import { money, date, dateTime, decimal } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PersonDialog } from "@/components/entity-dialogs";
 import { LeaseDialog } from "@/components/lease-dialogs";
 import { EmailViewDialog } from "@/components/email-view-dialog";
-import { Paperclip } from "lucide-react";
+import { PersonIdentifiersCard } from "@/components/person-identifiers-card";
 
 export default async function PersonDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -28,7 +29,10 @@ export default async function PersonDetailPage({ params }: { params: Promise<{ i
   });
   if (!person) notFound();
 
-  const [units, customDefs, leaseDefs] = await Promise.all([
+  const canReadIdentifiers = roleAllows(user.role, IDENTIFIER_READ_ROLES);
+  const canManageIdentifiers = roleAllows(user.role, WRITE_ROLES);
+
+  const [units, customDefs, leaseDefs, identifiers] = await Promise.all([
     prisma.unit.findMany({
       where: { tenantId: user.tenantId },
       include: { building: { include: { property: true } } },
@@ -44,6 +48,7 @@ export default async function PersonDetailPage({ params }: { params: Promise<{ i
       orderBy: { createdAt: "asc" },
       select: { key: true, label: true },
     }),
+    canReadIdentifiers ? listMaskedPersonIdentifiers(user.tenantId, person.id) : Promise.resolve([]),
   ]);
   // E-Mail-Kommunikationsverlauf (#39): ausgehende Mails (an To/Cc) und eingehende
   // Mails (per IMAP-Import, Absender = Kontakt) chronologisch zusammengeführt.
@@ -134,6 +139,15 @@ export default async function PersonDetailPage({ params }: { params: Promise<{ i
           }}
         />
       </div>
+
+      {canReadIdentifiers && (
+        <PersonIdentifiersCard
+          personId={person.id}
+          identifiers={identifiers}
+          canManage={canManageIdentifiers}
+          defaultCountryCode={user.presentation.marketProfile === "BR" ? "BR" : "DE"}
+        />
+      )}
 
       {/* Mietverhältnisse */}
       <Card>
