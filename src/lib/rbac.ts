@@ -60,6 +60,9 @@ export async function requireRole(allowed: UserRole[]): Promise<SessionUser> {
 /** Rollen mit Schreibrecht auf Stammdaten. ADMIN ist über roleAllows immer dabei. */
 export const WRITE_ROLES: UserRole[] = ["VERWALTER", "BUCHHALTUNG"];
 
+/** Identificadores são dados pessoais: leitura somente para backoffice autorizado. */
+export const IDENTIFIER_READ_ROLES: UserRole[] = ["VERWALTER", "BUCHHALTUNG"];
+
 /** Guard für Server Actions: liefert schreibberechtigten User. */
 export function requireWriter() {
   return requireRole(WRITE_ROLES);

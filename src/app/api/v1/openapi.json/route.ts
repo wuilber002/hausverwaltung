@@ -145,6 +145,16 @@ const spec = {
         responses: { "201": { description: "Created" }, "400": { description: "Bad request" } },
       },
     },
+    "/api/v1/persons/{id}/identifiers": {
+      get: {
+        tags: ["Personen"],
+        summary: "Identificadores pessoais mascarados",
+        description: "Disponível somente para ADMIN, VERWALTER e BUCHHALTUNG. Valores de documentos nunca são devolvidos em claro.",
+        security: [{ bearerAuth: [] }],
+        parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+        responses: { "200": { description: "Identificadores mascarados" }, "401": { description: "Unauthorized" }, "403": { description: "Forbidden" } },
+      },
+    },
     "/api/v1/persons": {
       get: listOp("Personen", "Personen auflisten"),
       post: {

@@ -8,7 +8,7 @@ const num = (d: unknown) => (d == null ? null : Number(d as number));
 export async function listProperties(tenantId: string) {
   const rows = await prisma.property.findMany({
     where: { tenantId },
-    include: { buildings: { include: { _count: { select: { units: true } } } } },
+    include: { structuredAddress: true, buildings: { include: { _count: { select: { units: true } } } } },
     orderBy: { createdAt: "asc" },
   });
   return rows.map((p) => ({
@@ -19,6 +19,11 @@ export async function listProperties(tenantId: string) {
     city: p.city,
     type: p.type,
     management: p.management,
+    address: p.structuredAddress ? {
+      line1: p.structuredAddress.line1, line2: p.structuredAddress.line2, district: p.structuredAddress.district,
+      locality: p.structuredAddress.locality, administrativeArea: p.structuredAddress.administrativeArea,
+      postalCode: p.structuredAddress.postalCode, countryCode: p.structuredAddress.countryCode,
+    } : null,
     units: p.buildings.reduce((a, b) => a + b._count.units, 0),
   }));
 }
@@ -26,7 +31,7 @@ export async function listProperties(tenantId: string) {
 export async function getProperty(tenantId: string, id: string) {
   const p = await prisma.property.findFirst({
     where: { id, tenantId },
-    include: { buildings: { include: { units: true } } },
+    include: { structuredAddress: true, buildings: { include: { units: true } } },
   });
   if (!p) return null;
   return {
@@ -37,6 +42,11 @@ export async function getProperty(tenantId: string, id: string) {
     city: p.city,
     type: p.type,
     management: p.management,
+    address: p.structuredAddress ? {
+      line1: p.structuredAddress.line1, line2: p.structuredAddress.line2, district: p.structuredAddress.district,
+      locality: p.structuredAddress.locality, administrativeArea: p.structuredAddress.administrativeArea,
+      postalCode: p.structuredAddress.postalCode, countryCode: p.structuredAddress.countryCode,
+    } : null,
     meaTotal: p.meaTotal,
     buildings: p.buildings.map((b) => ({
       id: b.id,
@@ -76,6 +86,28 @@ export async function listPersons(tenantId: string) {
     email: p.email,
     phone: p.phone,
     type: p.type,
+  }));
+}
+
+export async function listMaskedPersonIdentifiers(tenantId: string, personId: string) {
+  const rows = await prisma.personIdentifier.findMany({
+    where: { tenantId, personId },
+    orderBy: { createdAt: "asc" },
+    select: {
+      id: true, type: true, countryCode: true, valueNormalized: true,
+      validationStatus: true, issuer: true, issuedIn: true, issuedAt: true,
+    },
+  });
+  const { maskIdentifier } = await import("@/lib/identifiers");
+  return rows.map((row) => ({
+    id: row.id,
+    type: row.type,
+    countryCode: row.countryCode,
+    value: maskIdentifier(row.type, row.valueNormalized),
+    validationStatus: row.validationStatus,
+    issuer: row.issuer,
+    issuedIn: row.issuedIn,
+    issuedAt: row.issuedAt?.toISOString().slice(0, 10) ?? null,
   }));
 }
 
