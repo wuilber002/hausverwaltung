@@ -18,6 +18,7 @@ export async function TenantDialog() {
       title={t("tenants.new")}
       action={createTenant}
       submitLabel={t("common.create")}
+      preserveFieldsOnError
     >
       <TextField name="name" label={t("tenants.name")} />
       <TextField name="adminName" label={t("tenants.adminName")} required={false} />
