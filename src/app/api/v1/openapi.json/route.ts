@@ -154,6 +154,24 @@ const spec = {
         parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
         responses: { "200": { description: "Identificadores mascarados" }, "401": { description: "Unauthorized" }, "403": { description: "Forbidden" } },
       },
+      post: {
+        tags: ["Personen"],
+        summary: "Cadastrar identificador pessoal",
+        description: "Disponível somente para ADMIN, VERWALTER e BUCHHALTUNG. CPF, CNPJ e CIN brasileiros são validados; o valor nunca é devolvido em claro.",
+        security: [{ bearerAuth: [] }],
+        parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+        requestBody: {
+          required: true,
+          content: { "application/json": { schema: { type: "object", required: ["type", "countryCode", "value"], properties: {
+            type: { type: "string", enum: ["CPF", "CNPJ", "CIN", "RG", "IE", "CAEPF", "FOREIGN"] },
+            countryCode: { type: "string", minLength: 2, maxLength: 2 },
+            value: { type: "string", description: "Valor recebido somente para gravação; nunca devolvido em claro." },
+            issuer: { type: "string" }, issuedIn: { type: "string" }, issuedAt: { type: "string", format: "date" },
+            basisIdentifierId: { type: "string", description: "Obrigatório para CIN; aponta para CPF validado da mesma pessoa." },
+          } } },
+        },
+        responses: { "201": { description: "Identificador mascarado criado" }, "400": { description: "Dados inválidos" }, "401": { description: "Unauthorized" }, "403": { description: "Forbidden" }, "404": { description: "Not found" }, "409": { description: "Duplicado" } },
+      },
     },
     "/api/v1/persons": {
       get: listOp("Personen", "Personen auflisten"),
