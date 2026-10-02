@@ -23,6 +23,7 @@ import {
   AdjustmentDialog,
   DepositDialog,
   RenterDialog,
+  BrazilianLeaseTermsDialog,
 } from "@/components/lease-dialogs";
 import { DeleteButton } from "@/components/delete-button";
 import { WohnungsgeberDialog } from "@/components/wohnungsgeber-dialog";
@@ -33,6 +34,7 @@ import {
   deleteAdjustment,
   applyAdjustment,
   deleteDeposit,
+  deleteBrazilianLeaseTerms,
 } from "@/server/actions/leases";
 
 export default async function LeaseDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -44,8 +46,9 @@ export default async function LeaseDetailPage({ params }: { params: Promise<{ id
   const lease = await prisma.lease.findFirst({
     where: { id, tenantId: user.tenantId },
     include: {
-      unit: { include: { building: { include: { property: true } } } },
+      unit: { include: { building: { include: { property: true } }, owners: { include: { person: true } } } },
       renters: { include: { person: true } },
+      brazilianTerms: { include: { guarantor: true } },
       components: { orderBy: { type: "asc" } },
       adjustments: { orderBy: { effectiveDate: "asc" } },
       deposit: { include: { account: true } },
@@ -210,6 +213,50 @@ export default async function LeaseDetailPage({ params }: { params: Promise<{ id
           </CardContent>
         </Card>
       </div>
+
+      {user.presentation.marketProfile === "BR" && (
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-base">{t("brazilianLease.title")}</CardTitle>
+            <div className="flex items-center gap-1">
+              <BrazilianLeaseTermsDialog
+                leaseId={lease.id}
+                persons={personOpts}
+                terms={
+                  lease.brazilianTerms
+                    ? {
+                        contractReference: lease.brazilianTerms.contractReference,
+                        dueDay: lease.brazilianTerms.dueDay,
+                        guaranteeType: lease.brazilianTerms.guaranteeType,
+                        guarantorId: lease.brazilianTerms.guarantorId,
+                        guaranteeNote: lease.brazilianTerms.guaranteeNote,
+                      }
+                    : undefined
+                }
+              />
+              {lease.brazilianTerms && <DeleteButton action={deleteBrazilianLeaseTerms} id={lease.brazilianTerms.id} />}
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm">
+            {!lease.brazilianTerms ? (
+              <p className="text-muted-foreground">{t("brazilianLease.empty")}</p>
+            ) : (
+              <div className="grid gap-2 sm:grid-cols-2">
+                <div><span className="text-muted-foreground">{t("brazilianLease.purpose")}: </span>{t("brazilianLease.purposeResidential")}</div>
+                <div><span className="text-muted-foreground">{t("brazilianLease.dueDay")}: </span>{lease.brazilianTerms.dueDay}</div>
+                {lease.brazilianTerms.contractReference && <div><span className="text-muted-foreground">{t("brazilianLease.contractReference")}: </span>{lease.brazilianTerms.contractReference}</div>}
+                <div><span className="text-muted-foreground">{t("brazilianLease.guaranteeType")}: </span>{lease.brazilianTerms.guaranteeType ? t(`brazilianLease.guarantees.${lease.brazilianTerms.guaranteeType}`) : t("brazilianLease.none")}</div>
+                {lease.brazilianTerms.guarantor && <div><span className="text-muted-foreground">{t("brazilianLease.guarantor")}: </span>{lease.brazilianTerms.guarantor.firstName} {lease.brazilianTerms.guarantor.lastName}</div>}
+                {lease.brazilianTerms.guaranteeNote && <div><span className="text-muted-foreground">{t("brazilianLease.guaranteeNote")}: </span>{lease.brazilianTerms.guaranteeNote}</div>}
+              </div>
+            )}
+            <div>
+              <p className="mb-1 text-muted-foreground">{t("brazilianLease.owners")}</p>
+              {lease.unit.owners.length === 0 ? <p className="text-muted-foreground">{t("brazilianLease.ownersEmpty")}</p> : <p>{lease.unit.owners.map((owner) => `${owner.person.firstName} ${owner.person.lastName}`).join(" · ")}</p>}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Miet-Bestandteile */}
       <Card>

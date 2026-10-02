@@ -358,6 +358,7 @@ model Person {
   areaAllocations AreaAllocation[]
   inboundEmails InboundEmail[]
   identifiers PersonIdentifier[]
+  brazilianLeaseGuarantees BrazilianLeaseTerms[] @relation("BrazilianLeaseGuarantor")
   custom    Json          @default("{}")
   createdAt DateTime @default(now())
 
@@ -488,6 +489,7 @@ model Lease {
   components    RentComponent[]
   adjustments   RentAdjustment[]
   deposit       Deposit?
+  brazilianTerms BrazilianLeaseTerms?
   charges       Charge[]
   areaAllocations AreaAllocation[]
   custom        Json             @default("{}")
@@ -558,6 +560,38 @@ enum DepositType {
   BUERGSCHAFT
   VERPFAENDET
   KAUTIONSKONTO
+}
+
+enum BrazilianLeasePurpose {
+  RESIDENTIAL_URBAN
+}
+
+enum BrazilianGuaranteeType {
+  CAUCAO
+  FIANCA
+  SEGURO_FIANCA
+  FIDUCIARY_FUND_QUOTAS
+}
+
+// Dados exclusivamente informativos de uma locação residencial urbana BR.
+// Não participam da geração de cobranças nem da lógica financeira legada.
+model BrazilianLeaseTerms {
+  id                String                    @id @default(cuid())
+  tenantId          String
+  leaseId           String                    @unique
+  lease             Lease                     @relation(fields: [leaseId], references: [id], onDelete: Cascade)
+  contractReference String?
+  purpose           BrazilianLeasePurpose     @default(RESIDENTIAL_URBAN)
+  dueDay            Int
+  guaranteeType     BrazilianGuaranteeType?
+  guarantorId       String?
+  guarantor         Person?                   @relation("BrazilianLeaseGuarantor", fields: [guarantorId], references: [id], onDelete: SetNull)
+  guaranteeNote     String?
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
+
+  @@index([tenantId])
+  @@index([guarantorId])
 }
 
 model Deposit {

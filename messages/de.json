@@ -1165,5 +1165,33 @@
     "prompt": "Suchbegriff eingeben, um Objekte, Einheiten, Personen und Verträge zu durchsuchen.",
     "resultsFor": "{count, plural, one {# Treffer} other {# Treffer}} für „{q}\"",
     "noResults": "Keine Treffer."
+  },
+  "brazilianLease": {
+    "title": "Brasilianische Wohnraummietdaten",
+    "set": "BR-Mietdaten anlegen",
+    "edit": "BR-Mietdaten bearbeiten",
+    "save": "Mietdaten speichern",
+    "empty": "Noch keine brasilianischen Wohnraummietdaten hinterlegt.",
+    "contractReference": "Vertragsreferenz",
+    "dueDay": "Fälligkeitstag",
+    "purpose": "Verwendungszweck",
+    "purposeResidential": "Wohnen in der Stadt",
+    "guaranteeType": "Mietsicherheit",
+    "guarantor": "Bürge",
+    "guaranteeNote": "Hinweis zur Sicherheit",
+    "none": "Keine",
+    "owners": "Aktuelle Vermieter der Einheit",
+    "ownersEmpty": "Der Einheit ist kein Eigentümer zugeordnet.",
+    "errorInvalid": "Ungültige brasilianische Mietdaten.",
+    "errorProfile": "Diese Mietdaten sind nur für Organisationen in Brasilien verfügbar.",
+    "errorLeaseNotFound": "Vertrag nicht gefunden.",
+    "errorGuarantorNotFound": "Bürge nicht gefunden.",
+    "errorGuarantorRequiresFianca": "Ein Bürge kann nur bei einer Bürgschaft angegeben werden.",
+    "guarantees": {
+      "CAUCAO": "Kaution",
+      "FIANCA": "Bürgschaft",
+      "SEGURO_FIANCA": "Mietkautionsversicherung",
+      "FIDUCIARY_FUND_QUOTAS": "Treuhänderische Abtretung von Fondsanteilen"
+    }
   }
 }

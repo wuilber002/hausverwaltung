@@ -134,6 +134,20 @@ export const leaseUpdateSchema = z.object({
   noticePeriodM: optionalNum,
 });
 
+export const brazilianLeaseTermsSchema = z.object({
+  leaseId: z.string().min(1),
+  contractReference: optionalStr,
+  dueDay: z.coerce.number().int().min(1, "Dia de vencimento inválido").max(31, "Dia de vencimento inválido"),
+  guaranteeType: z
+    .string()
+    .trim()
+    .optional()
+    .transform((v) => (v ? v : undefined))
+    .pipe(z.enum(["CAUCAO", "FIANCA", "SEGURO_FIANCA", "FIDUCIARY_FUND_QUOTAS"]).optional()),
+  guarantorId: optionalStr,
+  guaranteeNote: optionalStr,
+});
+
 export const rentComponentSchema = z.object({
   leaseId: z.string().min(1),
   type: z.enum(["NEBENKOSTEN", "HEIZKOSTEN", "STELLPLATZ", "MODERNISIERUNG", "SONSTIGES"]),

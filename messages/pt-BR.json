@@ -1165,5 +1165,33 @@
     "prompt": "Informe um termo para pesquisar imóveis, unidades, pessoas e contratos.",
     "resultsFor": "{count, plural, one {# resultado} other {# resultados}} para “{q}”",
     "noResults": "Nenhum resultado."
+  },
+  "brazilianLease": {
+    "title": "Termos da locação residencial",
+    "set": "Definir termos BR",
+    "edit": "Editar termos BR",
+    "save": "Salvar termos",
+    "empty": "Nenhum termo residencial BR foi registrado.",
+    "contractReference": "Referência do contrato",
+    "dueDay": "Dia de vencimento",
+    "purpose": "Finalidade",
+    "purposeResidential": "Residencial urbana",
+    "guaranteeType": "Garantia locatícia",
+    "guarantor": "Fiador",
+    "guaranteeNote": "Observação sobre a garantia",
+    "none": "Nenhuma",
+    "owners": "Locadores atuais da unidade",
+    "ownersEmpty": "Nenhum proprietário vinculado à unidade.",
+    "errorInvalid": "Termos contratuais inválidos.",
+    "errorProfile": "Estes termos estão disponíveis somente para organizações do Brasil.",
+    "errorLeaseNotFound": "Contrato não encontrado.",
+    "errorGuarantorNotFound": "Fiador não encontrado.",
+    "errorGuarantorRequiresFianca": "O fiador só pode ser informado para garantia por fiança.",
+    "guarantees": {
+      "CAUCAO": "Caução",
+      "FIANCA": "Fiança",
+      "SEGURO_FIANCA": "Seguro-fiança",
+      "FIDUCIARY_FUND_QUOTAS": "Cessão fiduciária de quotas de fundo de investimento"
+    }
   }
 }

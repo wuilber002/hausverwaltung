@@ -1165,5 +1165,33 @@
     "prompt": "Enter a search term to search properties, units, people and leases.",
     "resultsFor": "{count, plural, one {# result} other {# results}} for “{q}”",
     "noResults": "No results."
+  },
+  "brazilianLease": {
+    "title": "Brazilian residential lease terms",
+    "set": "Set BR terms",
+    "edit": "Edit BR terms",
+    "save": "Save terms",
+    "empty": "No Brazilian residential terms recorded.",
+    "contractReference": "Contract reference",
+    "dueDay": "Due day",
+    "purpose": "Purpose",
+    "purposeResidential": "Urban residential",
+    "guaranteeType": "Lease guarantee",
+    "guarantor": "Guarantor",
+    "guaranteeNote": "Guarantee note",
+    "none": "None",
+    "owners": "Current unit landlords",
+    "ownersEmpty": "No owner is linked to this unit.",
+    "errorInvalid": "Invalid Brazilian lease terms.",
+    "errorProfile": "These terms are only available for organizations in Brazil.",
+    "errorLeaseNotFound": "Lease not found.",
+    "errorGuarantorNotFound": "Guarantor not found.",
+    "errorGuarantorRequiresFianca": "A guarantor can only be selected for a guarantor guarantee.",
+    "guarantees": {
+      "CAUCAO": "Deposit",
+      "FIANCA": "Guarantor guarantee",
+      "SEGURO_FIANCA": "Rental guarantee insurance",
+      "FIDUCIARY_FUND_QUOTAS": "Fiduciary assignment of investment-fund quotas"
+    }
   }
 }

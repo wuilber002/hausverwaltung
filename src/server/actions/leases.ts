@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { requireWriter } from "@/lib/rbac";
 import { pickCustom } from "@/lib/custom";
@@ -11,6 +12,7 @@ import {
   rentAdjustmentSchema,
   depositSchema,
   renterSchema,
+  brazilianLeaseTermsSchema,
   type ActionState,
 } from "@/lib/schemas";
 
@@ -96,6 +98,53 @@ export async function addRenter(_p: ActionState, fd: FormData): Promise<ActionSt
 export async function deleteRenter(fd: FormData): Promise<void> {
   const user = await requireWriter();
   await prisma.renter.deleteMany({ where: { id: String(fd.get("id") ?? ""), tenantId: user.tenantId } });
+  revalidatePath("/", "layout");
+}
+
+// --- Termos de locação residencial BR ---
+export async function upsertBrazilianLeaseTerms(_p: ActionState, fd: FormData): Promise<ActionState> {
+  const user = await requireWriter();
+  const t = await getTranslations({ locale: user.locale, namespace: "brazilianLease" });
+  const invalid = (message = t("errorInvalid")): ActionState => ({ error: message });
+  if (user.presentation.marketProfile !== "BR") return invalid(t("errorProfile"));
+
+  const parsed = brazilianLeaseTermsSchema.safeParse(Object.fromEntries(fd));
+  if (!parsed.success) return invalid();
+
+  const lease = await prisma.lease.findFirst({
+    where: { id: parsed.data.leaseId, tenantId: user.tenantId },
+    select: { id: true },
+  });
+  if (!lease) return invalid(t("errorLeaseNotFound"));
+
+  if (parsed.data.guarantorId && parsed.data.guaranteeType !== "FIANCA") {
+    return invalid(t("errorGuarantorRequiresFianca"));
+  }
+
+  if (parsed.data.guarantorId) {
+    const guarantor = await prisma.person.findFirst({
+      where: { id: parsed.data.guarantorId, tenantId: user.tenantId },
+      select: { id: true },
+    });
+    if (!guarantor) return invalid(t("errorGuarantorNotFound"));
+  }
+
+  const { leaseId, ...data } = parsed.data;
+  await prisma.brazilianLeaseTerms.upsert({
+    where: { leaseId },
+    create: { ...data, leaseId, tenantId: user.tenantId },
+    update: data,
+  });
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
+export async function deleteBrazilianLeaseTerms(fd: FormData): Promise<void> {
+  const user = await requireWriter();
+  if (user.presentation.marketProfile !== "BR") return;
+  await prisma.brazilianLeaseTerms.deleteMany({
+    where: { id: String(fd.get("id") ?? ""), tenantId: user.tenantId },
+  });
   revalidatePath("/", "layout");
 }
 

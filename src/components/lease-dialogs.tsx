@@ -10,6 +10,7 @@ import {
   createAdjustment,
   upsertDeposit,
   addRenter,
+  upsertBrazilianLeaseTerms,
 } from "@/server/actions/leases";
 
 type Opt = { value: string; label: string };
@@ -129,6 +130,58 @@ export async function LeaseDialog({
         />
       </div>
       <CustomFields defs={customDefs} values={lease?.custom} />
+    </CrudDialog>
+  );
+}
+
+type BrazilianLeaseTermsData = {
+  contractReference: string | null;
+  dueDay: number;
+  guaranteeType: "CAUCAO" | "FIANCA" | "SEGURO_FIANCA" | "FIDUCIARY_FUND_QUOTAS" | null;
+  guarantorId: string | null;
+  guaranteeNote: string | null;
+};
+
+export async function BrazilianLeaseTermsDialog({
+  leaseId,
+  persons,
+  terms,
+}: {
+  leaseId: string;
+  persons: Opt[];
+  terms?: BrazilianLeaseTermsData;
+}) {
+  const t = await getTranslations("brazilianLease");
+  return (
+    <CrudDialog
+      trigger={<CreateTrigger label={terms ? t("edit") : t("set")} variant="outline" />}
+      title={terms ? t("edit") : t("set")}
+      action={upsertBrazilianLeaseTerms}
+      submitLabel={t("save")}
+      preserveFieldsOnError
+    >
+      <input type="hidden" name="leaseId" value={leaseId} />
+      <TextField name="contractReference" label={t("contractReference")} required={false} defaultValue={terms?.contractReference ?? undefined} />
+      <TextField name="dueDay" label={t("dueDay")} type="number" defaultValue={terms?.dueDay ?? 10} />
+      <SelectField
+        name="guaranteeType"
+        label={t("guaranteeType")}
+        defaultValue={terms?.guaranteeType ?? ""}
+        options={[
+          { value: "", label: t("none") },
+          { value: "CAUCAO", label: t("guarantees.CAUCAO") },
+          { value: "FIANCA", label: t("guarantees.FIANCA") },
+          { value: "SEGURO_FIANCA", label: t("guarantees.SEGURO_FIANCA") },
+          { value: "FIDUCIARY_FUND_QUOTAS", label: t("guarantees.FIDUCIARY_FUND_QUOTAS") },
+        ]}
+      />
+      <SelectField
+        name="guarantorId"
+        label={t("guarantor")}
+        defaultValue={terms?.guarantorId ?? ""}
+        options={[{ value: "", label: t("none") }, ...persons]}
+      />
+      <TextField name="guaranteeNote" label={t("guaranteeNote")} required={false} defaultValue={terms?.guaranteeNote ?? undefined} />
     </CrudDialog>
   );
 }
