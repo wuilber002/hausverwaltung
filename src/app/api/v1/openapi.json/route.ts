@@ -168,7 +168,7 @@ const spec = {
             value: { type: "string", description: "Valor recebido somente para gravação; nunca devolvido em claro." },
             issuer: { type: "string" }, issuedIn: { type: "string" }, issuedAt: { type: "string", format: "date" },
             basisIdentifierId: { type: "string", description: "Obrigatório para CIN; aponta para CPF validado da mesma pessoa." },
-          } } },
+          } } } },
         },
         responses: { "201": { description: "Identificador mascarado criado" }, "400": { description: "Dados inválidos" }, "401": { description: "Unauthorized" }, "403": { description: "Forbidden" }, "404": { description: "Not found" }, "409": { description: "Duplicado" } },
       },
