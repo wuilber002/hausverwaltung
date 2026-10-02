@@ -613,7 +613,12 @@
     "actingHint": "Du arbeitest gerade in einem anderen Mandanten. Klick für Mandantenverwaltung.",
     "marketProfile": "Marktprofil",
     "marketProfileDE": "Deutschland (DE)",
-    "marketProfileBR": "Brasilien (BR)"
+    "marketProfileBR": "Brasilien (BR)",
+    "errorNameRequired": "Mandantenname fehlt.",
+    "errorInvalidEmail": "Ungültige E-Mail-Adresse.",
+    "errorPasswordTooShort": "Passwort muss mindestens 6 Zeichen haben.",
+    "errorInvalidMarketProfile": "Ungültiges Marktprofil.",
+    "errorEmailExists": "Diese E-Mail-Adresse ist bereits vergeben."
   },
   "bank": {
     "title": "Bank-Sync (Open Banking)",

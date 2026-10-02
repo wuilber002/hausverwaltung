@@ -613,7 +613,12 @@
     "actingHint": "Você está trabalhando em outra organização. Clique para gerenciá-las.",
     "marketProfile": "Perfil de mercado",
     "marketProfileDE": "Alemanha (DE)",
-    "marketProfileBR": "Brasil (BR)"
+    "marketProfileBR": "Brasil (BR)",
+    "errorNameRequired": "Informe o nome da organização.",
+    "errorInvalidEmail": "Informe um e-mail válido.",
+    "errorPasswordTooShort": "A senha deve ter pelo menos 6 caracteres.",
+    "errorInvalidMarketProfile": "Perfil de mercado inválido.",
+    "errorEmailExists": "Este e-mail já está em uso."
   },
   "bank": {
     "title": "Sincronização bancária (open banking)",

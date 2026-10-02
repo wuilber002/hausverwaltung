@@ -613,7 +613,12 @@
     "actingHint": "You are working in another tenant. Click for tenant management.",
     "marketProfile": "Market profile",
     "marketProfileDE": "Germany (DE)",
-    "marketProfileBR": "Brazil (BR)"
+    "marketProfileBR": "Brazil (BR)",
+    "errorNameRequired": "Tenant name is required.",
+    "errorInvalidEmail": "Enter a valid email address.",
+    "errorPasswordTooShort": "Password must be at least 6 characters.",
+    "errorInvalidMarketProfile": "Invalid market profile.",
+    "errorEmailExists": "This email address is already in use."
   },
   "bank": {
     "title": "Bank sync (open banking)",

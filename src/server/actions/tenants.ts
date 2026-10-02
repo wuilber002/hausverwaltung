@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { requireSuperAdmin } from "@/lib/rbac";
@@ -12,19 +13,20 @@ import type { ActionState } from "@/lib/schemas";
 
 // Neuen Mandanten + ersten Admin anlegen (nur Instanz-Admin).
 export async function createTenant(_p: ActionState, fd: FormData): Promise<ActionState> {
-  await requireSuperAdmin();
+  const user = await requireSuperAdmin();
+  const t = await getTranslations({ locale: user.locale, namespace: "tenants" });
   const name = String(fd.get("name") ?? "").trim();
   const adminName = String(fd.get("adminName") ?? "").trim() || "Admin";
   const email = String(fd.get("adminEmail") ?? "").trim().toLowerCase();
   const password = String(fd.get("adminPassword") ?? "");
   const marketProfileId = String(fd.get("marketProfile") ?? "DE");
-  if (!name) return { error: "Mandantenname fehlt" };
-  if (!/.+@.+\..+/.test(email)) return { error: "Ungültige E-Mail" };
-  if (password.length < 6) return { error: "Passwort mind. 6 Zeichen" };
-  if (!isMarketProfileId(marketProfileId)) return { error: "Ungültiges Marktprofil" };
+  if (!name) return { error: t("errorNameRequired") };
+  if (!/.+@.+\..+/.test(email)) return { error: t("errorInvalidEmail") };
+  if (password.length < 6) return { error: t("errorPasswordTooShort") };
+  if (!isMarketProfileId(marketProfileId)) return { error: t("errorInvalidMarketProfile") };
   const profile = marketProfile(marketProfileId);
   if (await prisma.user.findUnique({ where: { email }, select: { id: true } }))
-    return { error: "E-Mail bereits vergeben" };
+    return { error: t("errorEmailExists") };
 
   const tenant = await prisma.tenant.create({
     data: {
