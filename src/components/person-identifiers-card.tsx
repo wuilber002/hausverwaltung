@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { FileKey2, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronsUpDown, FileKey2, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { CrudDialog } from "@/components/crud-dialog";
 import { DeleteButton } from "@/components/delete-button";
@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { deletePersonIdentifier, savePersonIdentifier } from "@/server/actions/person-identifiers";
+import { requiresBrazilianCountry } from "@/lib/identifiers";
 
 const identifierTypes = ["CPF", "CNPJ", "CIN", "RG", "IE", "CAEPF", "FOREIGN"] as const;
 
@@ -26,6 +27,135 @@ type Identifier = {
   issuedAt: string | null;
 };
 
+const countryOptions = [
+  { code: "BR", labelKey: "countryBrazil" },
+  { code: "DE", labelKey: "countryGermany" },
+  { code: "US", labelKey: "countryUnitedStates" },
+] as const;
+
+function CountryCombobox({
+  countryCode,
+  onCountryCodeChange,
+  disabled,
+}: {
+  countryCode: string;
+  onCountryCodeChange: (countryCode: string) => void;
+  disabled: boolean;
+}) {
+  const t = useTranslations("personIdentifiers");
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const labelFor = (code: string) => {
+    const option = countryOptions.find((country) => country.code === code);
+    return option ? `${t(option.labelKey)} (${code})` : code;
+  };
+
+  useEffect(() => {
+    const option = countryOptions.find((country) => country.code === countryCode);
+    setQuery(option ? `${t(option.labelKey)} (${countryCode})` : countryCode);
+  }, [countryCode, t]);
+
+  const normalizedQuery = query.trim().toUpperCase();
+  const matches = countryOptions.filter((country) => {
+    const label = t(country.labelKey).toUpperCase();
+    return !normalizedQuery || country.code.includes(normalizedQuery) || label.includes(normalizedQuery);
+  });
+  const customIsoCode = /^[A-Z]{2}$/.test(normalizedQuery) ? normalizedQuery : null;
+
+  function selectCountry(code: string) {
+    onCountryCodeChange(code);
+    setQuery(labelFor(code));
+    setOpen(false);
+  }
+
+  return (
+    <div className="space-y-2">
+      <Label htmlFor="identifierCountryCode">{t("countryCode")}</Label>
+      <input type="hidden" name="countryCode" value={countryCode} />
+      <div className="relative">
+        <div className="flex gap-1">
+          <Input
+            id="identifierCountryCode"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded={open}
+            aria-controls="identifier-country-options"
+            value={query}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setOpen(true);
+            }}
+            onFocus={() => setOpen(true)}
+            onBlur={() => {
+              window.setTimeout(() => {
+                setOpen(false);
+                setQuery(labelFor(countryCode));
+              }, 150);
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && customIsoCode) {
+                event.preventDefault();
+                selectCountry(customIsoCode);
+              }
+              if (event.key === "Escape") {
+                setOpen(false);
+                setQuery(labelFor(countryCode));
+              }
+            }}
+            placeholder={t("countrySearch")}
+            disabled={disabled}
+            required
+          />
+          <Button
+            type="button"
+            size="icon"
+            variant="outline"
+            aria-label={t("countryCode")}
+            disabled={disabled}
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={() => setOpen((current) => !current)}
+          >
+            <ChevronsUpDown className="size-4" />
+          </Button>
+        </div>
+        {!disabled && open && (
+          <div
+            id="identifier-country-options"
+            role="listbox"
+            className="absolute z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-lg border border-input bg-popover p-1 text-sm shadow-md"
+          >
+            {matches.map((country) => (
+              <button
+                key={country.code}
+                type="button"
+                role="option"
+                aria-selected={countryCode === country.code}
+                className="flex w-full rounded-md px-2 py-1.5 text-left hover:bg-muted"
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => selectCountry(country.code)}
+              >
+                {t(country.labelKey)} ({country.code})
+              </button>
+            ))}
+            {customIsoCode && !countryOptions.some((country) => country.code === customIsoCode) && (
+              <button
+                type="button"
+                role="option"
+                className="flex w-full rounded-md px-2 py-1.5 text-left hover:bg-muted"
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => selectCountry(customIsoCode)}
+              >
+                {t("countryUseIsoCode", { code: customIsoCode })}
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+      {disabled && <p className="text-xs text-muted-foreground">{t("countryLockedBR")}</p>}
+    </div>
+  );
+}
+
 function IdentifierDialog({
   personId,
   identifiers,
@@ -38,6 +168,10 @@ function IdentifierDialog({
   const t = useTranslations("personIdentifiers");
   const [type, setType] = useState<(typeof identifierTypes)[number]>(defaultCountryCode === "BR" ? "CPF" : "FOREIGN");
   const [countryCode, setCountryCode] = useState(defaultCountryCode);
+  const brazilianDocument = requiresBrazilianCountry(type);
+  useEffect(() => {
+    if (brazilianDocument) setCountryCode("BR");
+  }, [brazilianDocument]);
   const validCpfIdentifiers = identifiers.filter(
     (identifier) => identifier.type === "CPF" && identifier.validationStatus === "VALID",
   );
@@ -73,19 +207,11 @@ function IdentifierDialog({
             ))}
           </select>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="identifierCountryCode">{t("countryCode")}</Label>
-          <Input
-            id="identifierCountryCode"
-            name="countryCode"
-            value={countryCode}
-            onChange={(event) => setCountryCode(event.target.value.toUpperCase())}
-            maxLength={2}
-            placeholder="BR"
-            pattern="[A-Za-z]{2}"
-            required
-          />
-        </div>
+        <CountryCombobox
+          countryCode={countryCode}
+          onCountryCodeChange={setCountryCode}
+          disabled={brazilianDocument}
+        />
       </div>
       <TextField name="value" label={t("value")} />
       {type === "CIN" && (

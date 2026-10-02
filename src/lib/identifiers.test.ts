@@ -18,6 +18,10 @@ describe("Brazilian identifiers", () => {
     expect(() => normalizeIdentifier({ type: "CNPJ", countryCode: "BR", value: "04.252.011/0001-10x" })).toThrow();
   });
 
+  it("requires Brazil for Brazilian identifier types", () => {
+    expect(() => normalizeIdentifier({ type: "CPF", countryCode: "US", value: "529.982.247-25" })).toThrow();
+  });
+
   it("models CIN with CPF validation and masks values for presentation", () => {
     expect(normalizeIdentifier({ type: "CIN", countryCode: "BR", value: "52998224725" }).validationStatus).toBe("VALID");
     expect(maskIdentifier("CPF", "52998224725")).toBe("***.***.***-25");

@@ -1,7 +1,12 @@
 export const PERSON_IDENTIFIER_TYPES = ["CPF", "CNPJ", "CIN", "RG", "IE", "CAEPF", "FOREIGN"] as const;
+export const BRAZILIAN_IDENTIFIER_TYPES = ["CPF", "CNPJ", "CIN"] as const;
 
 export type PersonIdentifierType = (typeof PERSON_IDENTIFIER_TYPES)[number];
 export type IdentifierValidationStatus = "UNVERIFIED" | "VALID" | "INVALID";
+
+export function requiresBrazilianCountry(type: PersonIdentifierType): boolean {
+  return (BRAZILIAN_IDENTIFIER_TYPES as readonly string[]).includes(type);
+}
 
 export type NormalizedIdentifier = Readonly<{
   type: PersonIdentifierType;
@@ -70,7 +75,11 @@ export function normalizeIdentifier(input: {
     throw new Error("Identificador inválido");
   }
 
-  if ((input.type === "CPF" || input.type === "CNPJ" || input.type === "CIN") && countryCode === "BR") {
+  if (requiresBrazilianCountry(input.type) && countryCode !== "BR") {
+    throw new Error("Identificador inválido");
+  }
+
+  if (requiresBrazilianCountry(input.type)) {
     if (!hasOnlyDocumentSeparators(valueDisplay)) throw new Error("Identificador inválido");
     const valueNormalized = digits(valueDisplay);
     const valid = input.type === "CNPJ" ? isValidCnpj(valueDisplay) : isValidCpf(valueDisplay);
